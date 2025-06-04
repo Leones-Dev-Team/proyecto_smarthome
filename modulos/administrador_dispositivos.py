@@ -1,6 +1,6 @@
 # modulos/administrador_dispositivos.py
 
-def _obtener_dispositivo_por_id(dispositivos, dispositivo_id):
+def obtener_dispositivo_por_id(dispositivos, dispositivo_id):
     """
     Función auxiliar para encontrar un dispositivo por su ID.
     """
@@ -32,7 +32,7 @@ def agregar_dispositivo(dispositivos):
         dispositivo_id = input("Ingrese el ID del dispositivo (debe ser único): ").strip()
         if not dispositivo_id:
             print("Error: El ID del dispositivo no puede estar vacío.")
-        elif _obtener_dispositivo_por_id(dispositivos, dispositivo_id):
+        elif obtener_dispositivo_por_id(dispositivos, dispositivo_id):
             print(f"Error: Ya existe un dispositivo con el ID '{dispositivo_id}'. Por favor, ingrese un ID diferente.")
         else:
             nuevo_dispositivo["id"] = dispositivo_id
@@ -66,7 +66,7 @@ def eliminar_dispositivo(dispositivos, dispositivo_id):
     """
     Elimina un dispositivo de la lista por su ID.
     """
-    dispositivo = _obtener_dispositivo_por_id(dispositivos, dispositivo_id) 
+    dispositivo = obtener_dispositivo_por_id(dispositivos, dispositivo_id) 
     if dispositivo:
         dispositivos.remove(dispositivo)
         print(f"Dispositivo con ID '{dispositivo_id}' eliminado.")
@@ -78,7 +78,7 @@ def buscar_dispositivo(dispositivos, dispositivo_id):
     """
     Busca y muestra la información de un dispositivo por su ID.
     """
-    dispositivo = _obtener_dispositivo_por_id(dispositivos, dispositivo_id) 
+    dispositivo = obtener_dispositivo_por_id(dispositivos, dispositivo_id) 
     if dispositivo:
         print(f"\n--- Dispositivo Encontrado ---")
         print(f"ID: {dispositivo['id']}")
