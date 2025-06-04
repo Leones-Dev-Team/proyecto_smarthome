@@ -1,6 +1,7 @@
 # modulos/administrador_dispositivos.py
 
 def obtener_dispositivo_por_id(dispositivos, dispositivo_id):
+
     """
     Función auxiliar para encontrar un dispositivo por su ID.
     """
@@ -67,6 +68,7 @@ def eliminar_dispositivo(dispositivos, dispositivo_id):
     Elimina un dispositivo de la lista por su ID.
     """
     dispositivo = obtener_dispositivo_por_id(dispositivos, dispositivo_id) 
+    
     if dispositivo:
         dispositivos.remove(dispositivo)
         print(f"Dispositivo con ID '{dispositivo_id}' eliminado.")
@@ -79,6 +81,7 @@ def buscar_dispositivo(dispositivos, dispositivo_id):
     Busca y muestra la información de un dispositivo por su ID.
     """
     dispositivo = obtener_dispositivo_por_id(dispositivos, dispositivo_id) 
+
     if dispositivo:
         print(f"\n--- Dispositivo Encontrado ---")
         print(f"ID: {dispositivo['id']}")
