@@ -5,7 +5,6 @@
 """
 Este modulo contiene la lista inicial de dispositivos.
 Actualmente es un prototipo para pruebas, en el futuro se integrara con base de datos.
->>>>>>> main
 """
 
 dispositivos = [
@@ -17,7 +16,7 @@ dispositivos = [
     },
     {
         "id": "b456",
-        "tipo": "cámara",
+        "tipo": "camara",
         "estado": "apagado",
         "es_esencial": False
     },
