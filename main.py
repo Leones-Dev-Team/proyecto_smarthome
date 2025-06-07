@@ -1,10 +1,9 @@
 # Importación del módulo que contiene la lógica del menú
 from modulos.interfaz_menu import mostrar_menu
-
+from modulos.dispositivos_listados import dispositivos
 
 # Función principal que inicializa los datos esenciales y lanza la interfaz.
 def inicializar_programa():
-    dispositivos = []   # Lista que actuará como "base de datos" durante la ejecución
     mostrar_menu(dispositivos)   # Pasa el control a la interfaz del menú
 
 
