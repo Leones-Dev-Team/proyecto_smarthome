@@ -1,10 +1,11 @@
-# --- MÓDULO DE DISPOSITIVOS ---
+# --- MODULO DE DISPOSITIVOS ---
 # Este archivo define una lista de dispositivos reutilizable por todo el sistema.
-# Es un prototipo inicial. En el futuro, estos datos se cargarán desde una base de datos.
+# Es un prototipo inicial. En el futuro, estos datos se cargaran desde una base de datos.
 
 """
-Este módulo contiene la lista inicial de dispositivos.
-Actualmente es un prototipo para pruebas, en el futuro se integrará con base de datos.
+Este modulo contiene la lista inicial de dispositivos.
+Actualmente es un prototipo para pruebas, en el futuro se integrara con base de datos.
+>>>>>>> main
 """
 
 dispositivos = [
