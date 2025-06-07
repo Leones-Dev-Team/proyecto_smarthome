@@ -9,14 +9,14 @@ def mostrar_menu(dispositivos):   # Funcion menu que gestiona el programa SmartH
     while True:
         # Opciones del menu
         print("""
-        --- Menu Principal ---"
-        1. Listar dispositivos
-        2. Agregar dispositivo
-        3. Eliminar dispositivo
-        4. Buscar dispositivo
-        5. Activar Modo Ahorro de Energia
-        0. Salir
-        """)
+            --- Menu Principal ---"
+            1. Listar dispositivos
+            2. Agregar dispositivo
+            3. Eliminar dispositivo
+            4. Buscar dispositivo
+            5. Activar Modo Ahorro de Energia
+            0. Salir
+            """)
         opcion = input("Seleccione una opcion: ").strip()
 
         if not opcion.isdigit():   # Verifica si la opcion no es un numero
