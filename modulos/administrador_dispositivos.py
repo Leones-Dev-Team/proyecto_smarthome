@@ -9,9 +9,8 @@ def obtener_dispositivo_por_id(dispositivos, dispositivo_id):
             return dispositivo
     return None
 
+
 # Funcion para listar los dispositivos actuales con sus atributos y estado actual
-
-
 def listar_dispositivos(dispositivos):
     if not dispositivos:
         print("No hay dispositivos registrados.")
@@ -22,9 +21,8 @@ def listar_dispositivos(dispositivos):
         print(
             f"ID: {dispositivo['id']}, Tipo: {dispositivo['tipo']}, Estado: {dispositivo['estado']}, Esencial: {'Sí' if dispositivo.get('es_esencial') else 'No'}")
 
+
 # Funcion para agregar dispositivos indicando su tipo
-
-
 def agregar_dispositivo(dispositivos):
     """
     Agrega un nuevo dispositivo a la lista, validando que el ID sea unico.
@@ -69,9 +67,8 @@ def agregar_dispositivo(dispositivos):
     print(
         f"Dispositivo '{nuevo_dispositivo['tipo']}' con ID '{nuevo_dispositivo['id']}' agregado exitosamente.")
 
+
 # Funcion para eliminar dispositivos
-
-
 def eliminar_dispositivo(dispositivos, dispositivo_id):
     """
     Elimina un dispositivo de la lista por su ID.
@@ -84,9 +81,8 @@ def eliminar_dispositivo(dispositivos, dispositivo_id):
     else:
         print("Dispositivo no encontrado.")
 
+
 # Funcion para buscar un dispositivo
-
-
 def buscar_dispositivo(dispositivos, dispositivo_id):
     """
     Busca y muestra la información de un dispositivo por su ID.

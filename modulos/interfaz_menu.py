@@ -8,14 +8,16 @@ def mostrar_menu(dispositivos):   # Funcion menu que gestiona el programa SmartH
     # Bucle while para mantener el menu activo hasta que el usuario seleccione "0. Salir"
     while True:
         # Opciones del menu
-        print("\n--- Menu Principal ---")
-        print("1. Listar dispositivos")
-        print("2. Agregar dispositivo")
-        print("3. Eliminar dispositivo")
-        print("4. Buscar dispositivo")
-        print("5. Activar Modo Ahorro de Energia")
-        print("0. Salir")
-        opcion = input("Seleccione una opcion: ")
+        print("""
+        --- Menu Principal ---"
+        1. Listar dispositivos
+        2. Agregar dispositivo
+        3. Eliminar dispositivo
+        4. Buscar dispositivo
+        5. Activar Modo Ahorro de Energia
+        0. Salir
+        """)
+        opcion = input("Seleccione una opcion: ").strip()
 
         if not opcion.isdigit():   # Verifica si la opcion no es un numero
             print("¡Ingrese un numero valido!")
@@ -43,12 +45,20 @@ def mostrar_menu(dispositivos):   # Funcion menu que gestiona el programa SmartH
             nuevo_dispositivo["estado"] = estado
             agregar_dispositivo(dispositivos, nuevo_dispositivo)
         elif opcion == "3":
-            eliminar_dispositivo(dispositivos, input(
-                "Ingrese ID del dispositivo a eliminar: "))
+            dispositivo_id = input(
+                "Ingrese ID del dispositivo a eliminar: ").strip()
+            if not dispositivo_id:
+                print("Error: el ID no puede estar vacio.")
+            else:
+                eliminar_dispositivo(dispositivos, dispositivo_id)
         elif opcion == "4":
-            dispositivo = buscar_dispositivo(
-                dispositivos, input("ID del dispositivo a buscar: "))
-            print(dispositivo if dispositivo else "Dispositivo no encontrado.")
+            dispositivo_id = input(
+                "Ingrese el ID del dispositivo a buscar: ").strip()
+            if not dispositivo_id:
+                print("Error: el ID no puede estar vacio.")
+            else:
+                dispositivo = buscar_dispositivo(dispositivos, dispositivo_id)
+                print(dispositivo if dispositivo else "Dispositivo no encontrado.")
         elif opcion == "5":
             activar_modo_ahorro(dispositivos)
         elif opcion == "0":   # Opcion "0" para salir (cierra el bucle while)

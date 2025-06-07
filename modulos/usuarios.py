@@ -1,4 +1,4 @@
-# Se crearía un diccionario para guardar los usuarios.
+# Se crearia un diccionario para guardar los usuarios.
 # Empieza con un usuario administrador por defecto.
 
 from modulos.dispositivos_listados import dispositivos
@@ -18,10 +18,8 @@ def pausar_pantalla():
     """Espera que el usuario presione Enter."""
     input("\nPresiona Enter para continuar...")
 
-# Acciones del Sistema (Registrar e Iniciar Sesion)
 
-
-def registrar_usuario():
+def registrar_usuario():  # Acciones del Sistema (Registrar e Iniciar Sesion)
     """Crea un nuevo usuario estandar."""
     print("\n--- REGISTRAR NUEVO USUARIO ---")
     nombre = obtener_input("Elige un nombre de usuario: ").lower()
@@ -51,14 +49,17 @@ def iniciar_sesion():
         pausar_pantalla()
         return None, None  # Si falla, no devuelve nada
 
-# Menus para Usuarios
 
-
-def menu_estandar(nombre_usuario):
+def menu_estandar(nombre_usuario):  # Menus para Usuarios
     """Muestra opciones para usuarios estandar."""
     while True:
         print(f"\n--- MENU ESTANDAR ({nombre_usuario}) ---")
-        print("1. Ver mis datos\n2. Activar/Ejecutar automatizacion\n3. Consultar dispositivos\n4. Cerrar sesion")
+        print("""
+            1. Ver mis datos
+            2. Activar/Ejecutar automatizacion
+            3. Consultar dispositivos
+            0. Cerrar sesion
+            """)
         opcion = obtener_input("Elige una opción: ")
 
         if opcion == '1':
@@ -79,7 +80,7 @@ def menu_estandar(nombre_usuario):
             pausar_pantalla()
 
         # Agregar la opcion dispositvos activos(enumerandolos) / no hay dispositivos activos
-        elif opcion == '4':
+        elif opcion == '0':
             print(f"Cerrando sesion de {nombre_usuario}.")
             break  # Sale del menu
         else:
@@ -90,7 +91,12 @@ def menu_administrador(nombre_usuario):
     """Muestra opciones para usuarios administradores."""
     while True:
         print(f"\n--- MENU ADMINISTRADOR ({nombre_usuario}) ---")
-        print("1. Consultar automatizaciones activas\n2. Gestionar dispositivos\n3. Modificar rol de un usuario\n4. Cerrar sesion")
+        print("""
+            1. Consultar automatizaciones activas
+            2. Gestionar dispositivos
+            3. Modificar rol de un usuario
+            0. Cerrar sesion
+            """)
         opcion = obtener_input("Elige una opcion: ")
 
         if opcion == '1':
@@ -118,20 +124,22 @@ def menu_administrador(nombre_usuario):
             else:
                 print("Usuario no encontrado o no puedes modificar su rol.")
                 pausar_pantalla()
-        elif opcion == '4':
+        elif opcion == '0':
             print(f"Cerrando sesión de {nombre_usuario}.")
             break  # Sale del menu
         else:
             print("Opción no valida. Intentalo de nuevo.")
 
-# Programa Principal
-
 
 def main_menu():
     """El menu principal que se muestra al inicio."""
     while True:
-        print("\n--- MENU PRINCIPAL ---")
-        print("1. Registrar nuevo usuario\n2. Iniciar sesion\n3. Salir")
+        print("""
+            --- MENU PRINCIPAL ---
+            1. Registrar nuevo usuario
+            2. Iniciar sesion
+            0. Salir
+            """)
         opcion = obtener_input("Elige una opcion: ")
 
         if opcion == '1':
@@ -143,13 +151,8 @@ def main_menu():
                     menu_estandar(usuario_actual)
                 elif rol_actual == "administrador":
                     menu_administrador(usuario_actual)
-        elif opcion == '3':
+        elif opcion == '0':
             print("Gracias por usar el programa ¡Hasta luego!")
             break  # Termina el programa
         else:
             print("Opción no válida. Por favor, elige 1, 2 o 3.")
-
-
-# El programa comienza aqui
-if __name__ == "__main__":
-    main_menu()
