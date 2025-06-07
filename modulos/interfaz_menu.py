@@ -1,4 +1,4 @@
-# Importación de los modulos que contienen la lógica de los administradores de dispositivos y modo ahorro
+# Importacion de los modulos que contienen la logica de los administradores de dispositivos y modo ahorro
 import uuid
 from modulos.administrador_dispositivos import listar_dispositivos, agregar_dispositivo, eliminar_dispositivo, buscar_dispositivo
 from modulos.administrador_automatizacion import activar_modo_ahorro
@@ -17,18 +17,18 @@ def mostrar_menu(dispositivos):   # Funcion menu que gestiona el programa SmartH
         print("0. Salir")
         opcion = input("Seleccione una opcion: ")
 
-        if not opcion.isdigit():   # Verifica si la opción no es un número
-            print("¡Ingrese un número válido!")
-            continue   # Vuelve al inicio del bucle (muestra el menú otra vez)
+        if not opcion.isdigit():   # Verifica si la opcion no es un numero
+            print("¡Ingrese un numero valido!")
+            continue   # Vuelve al inicio del bucle (muestra el menu otra vez)
 
-        # Estructura if-elif-else que ejecuta la acción seleccionada en el menú
+        # Estructura if-elif-else que ejecuta la accion seleccionada en el menú
         if opcion == "1":
             # Recibe la lista Dispositivos como parametro
             listar_dispositivos(dispositivos)
         elif opcion == "2":
             # Solicita los datos del nuevo dispositivo al usuario y genera un diccionario
             nuevo_dispositivo = {
-                # Genera automáticamente un ID único y corto
+                # Genera automaticamente un ID unico y corto
                 "id": str(uuid.uuid4())[:4],
                 "tipo": input("Tipo (luz, camara, etc.): "),
                 # Convierte el str ingresado en booleano
@@ -51,7 +51,7 @@ def mostrar_menu(dispositivos):   # Funcion menu que gestiona el programa SmartH
             print(dispositivo if dispositivo else "Dispositivo no encontrado.")
         elif opcion == "5":
             activar_modo_ahorro(dispositivos)
-        elif opcion == "0":   # Opción "0" para salir (cierra el bucle while)
+        elif opcion == "0":   # Opcion "0" para salir (cierra el bucle while)
             print("Saliendo...")
             break
         else:
