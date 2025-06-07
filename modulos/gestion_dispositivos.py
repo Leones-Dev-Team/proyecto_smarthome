@@ -1,10 +1,10 @@
 # Importación de los modulos que contienen la logica de los administradores de dispositivos y modo ahorro
-import uuid
-from modulos.administrador_dispositivos import listar_dispositivos, agregar_dispositivo, eliminar_dispositivo, buscar_dispositivo
-from modulos.administrador_automatizacion import activar_modo_ahorro
+from modulos.operaciones_dispositivos import listar_dispositivos, agregar_dispositivo, eliminar_dispositivo, buscar_dispositivo
+from modulos.modo_ahorro_energia import activar_modo_ahorro
 
 
-def mostrar_menu(dispositivos):   # Funcion menu que gestiona el programa SmartHome
+# Funcion menu que gestiona el programa SmartHome
+def mostrar_menu(dispositivos, volver_a=None):
     # Bucle while para mantener el menu activo hasta que el usuario seleccione "0. Salir"
     while True:
         # Opciones del menu
@@ -43,12 +43,14 @@ def mostrar_menu(dispositivos):   # Funcion menu que gestiona el programa SmartH
             if not dispositivo_id:
                 print("Error: el ID no puede estar vacio.")
             else:
-                dispositivo = buscar_dispositivo(dispositivos, dispositivo_id)
-                print(dispositivo if dispositivo else "Dispositivo no encontrado.")
+                buscar_dispositivo(dispositivos, dispositivo_id)
         elif opcion == "5":
             activar_modo_ahorro(dispositivos)
         elif opcion == "0":   # Opcion "0" para salir (cierra el bucle while)
-            print("Saliendo...")
-            break
+            print("Volviendo al menú anterior...")
+            if volver_a:
+                return  # Regresa al menú que llamó esta función
+            else:
+                break
         else:
             print("Opcion incorrecta.")

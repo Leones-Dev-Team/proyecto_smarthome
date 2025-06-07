@@ -1,7 +1,7 @@
 # Se crearia un diccionario para guardar los usuarios.
 # Empieza con un usuario administrador por defecto.
-
-from modulos.dispositivos_listados import dispositivos
+from modulos.gestion_dispositivos import mostrar_menu
+from modulos.datos_dispositivos import dispositivos
 
 
 usuarios = {
@@ -76,7 +76,8 @@ def menu_estandar(nombre_usuario):  # Menus para Usuarios
             else:
                 print("Dispositivos conectados:")
                 for idx, dispositivo in enumerate(dispositivos, 1):
-                    print(f"{idx}. {dispositivo}")
+                    print(
+                        f"{idx}. {dispositivo['tipo']} (ID: {dispositivo['id']}, Estado: {dispositivo['estado']})")
             pausar_pantalla()
 
         # Agregar la opcion dispositvos activos(enumerandolos) / no hay dispositivos activos
@@ -104,9 +105,10 @@ def menu_administrador(nombre_usuario):
                 "\n--- AUTOMATIZACIONES ACTIVAS ---\nMostrando automatizaciones en curso.")
             pausar_pantalla()
         elif opcion == '2':
+            # Acceso al menú de dispositivos desde administrador
             print(
                 "\n--- GESTIONAR DISPOSITIVOS ---\nAqui puedes añadir, modificar o eliminar dispositivos.")
-            pausar_pantalla()
+            mostrar_menu(dispositivos, volver_a=menu_administrador)
         elif opcion == '3':  # Cambiar rol de usuario
             print("\n--- CAMBIAR ROL DE USUARIO ---")
             usuario_a_modificar = obtener_input(
@@ -119,8 +121,10 @@ def menu_administrador(nombre_usuario):
                     usuarios[usuario_a_modificar]["rol"] = nuevo_rol
                     print(
                         f"¡Rol de '{usuario_a_modificar}' cambiado a '{nuevo_rol}'!")
+                    pausar_pantalla()
                 else:
                     print("Rol no valido.")
+                    pausar_pantalla()
             else:
                 print("Usuario no encontrado o no puedes modificar su rol.")
                 pausar_pantalla()

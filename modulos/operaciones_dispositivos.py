@@ -59,8 +59,22 @@ def agregar_dispositivo(dispositivos):
         estado = input("Estado (encendido/apagado): ").lower().strip()
     nuevo_dispositivo["estado"] = estado
 
-    # Permite validar y establecer es_esencial
-    es_esencial_input = input("¿Es esencial? (si/no): ").lower().strip()
+    # Permite validar y establecer si el dispositivo es_esencial
+    es_esencial_input = ""
+    intentos = 0  # Inicializa contador intentos
+
+    while es_esencial_input not in ["si", "no"]:
+        if intentos > 0:
+            print('Error. Debe responder "si" o "no. Intente nuevamente.')
+
+        es_esencial_input = input("¿Es esencial? (si/no): ").lower().strip()
+        intentos += 1
+
+    # Permitir salida despues de varios intentos fallidos
+    if intentos >= 3 and es_esencial_input not in ["si", "no"]:
+        print("Demasiados intentos fallidos. Cancelando operacion.")
+        return  # Sale de la funcion al haber muchos errores
+
     nuevo_dispositivo["es_esencial"] = es_esencial_input == "si"
 
     dispositivos.append(nuevo_dispositivo)
