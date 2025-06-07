@@ -1,10 +1,9 @@
-# Importacion de los modulos que contienen la logica de los administradores de dispositivos y modo ahorro
+# Importación de los modulos que contienen la logica de los administradores de dispositivos y modo ahorro
 import uuid
 from modulos.administrador_dispositivos import listar_dispositivos, agregar_dispositivo, eliminar_dispositivo, buscar_dispositivo
 from modulos.administrador_automatizacion import activar_modo_ahorro
 
-
-def mostrar_menu(dispositivos):   # Funcion menu que gestiona el programa SmartHome
+def mostrar_menu(dispositivos):    # Funcion menu que gestiona el programa SmartHome
     # Bucle while para mantener el menu activo hasta que el usuario seleccione "0. Salir"
     while True:
         # Opciones del menu
@@ -18,8 +17,8 @@ def mostrar_menu(dispositivos):   # Funcion menu que gestiona el programa SmartH
         opcion = input("Seleccione una opcion: ")
 
         if not opcion.isdigit():   # Verifica si la opcion no es un numero
-            print("¡Ingrese un numero valido!")
-            continue   # Vuelve al inicio del bucle (muestra el menu otra vez)
+            print("Ingrese un numero valido!")
+            continue  # Vuelve al inicio del bucle (muestra el menu otra vez)
 
         # Estructura if-elif-else que ejecuta la accion seleccionada en el menu
         if opcion == "1":
@@ -27,21 +26,7 @@ def mostrar_menu(dispositivos):   # Funcion menu que gestiona el programa SmartH
             listar_dispositivos(dispositivos)
         elif opcion == "2":
             # Solicita los datos del nuevo dispositivo al usuario y genera un diccionario
-            nuevo_dispositivo = {
-                # Genera automaticamente un ID unico y corto
-                "id": str(uuid.uuid4())[:4],
-                "tipo": input("Tipo (luz, camara, etc.): "),
-                # Convierte el str ingresado en booleano
-                "es_esencial": input("¿Es esencial? (s/n): ").lower() == "s"
-            }
-            # Bucle while para validar el estado
-            estado = input("Estado (encendido/apagado): ").lower()
-            while estado not in ["encendido", "apagado"]:
-                print("Error: El estado debe ser 'encendido' o 'apagado'.")
-                estado = input("Estado (encendido/apagado): ").lower()
-            # Asigna el estado validado al diccionario
-            nuevo_dispositivo["estado"] = estado
-            agregar_dispositivo(dispositivos, nuevo_dispositivo)
+            agregar_dispositivo(dispositivos)
         elif opcion == "3":
             eliminar_dispositivo(dispositivos, input(
                 "Ingrese ID del dispositivo a eliminar: "))
