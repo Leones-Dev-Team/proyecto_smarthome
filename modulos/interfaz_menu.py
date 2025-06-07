@@ -21,7 +21,7 @@ def mostrar_menu(dispositivos):   # Funcion menu que gestiona el programa SmartH
             print("¡Ingrese un numero valido!")
             continue   # Vuelve al inicio del bucle (muestra el menu otra vez)
 
-        # Estructura if-elif-else que ejecuta la accion seleccionada en el menú
+        # Estructura if-elif-else que ejecuta la accion seleccionada en el menu
         if opcion == "1":
             # Recibe la lista Dispositivos como parametro
             listar_dispositivos(dispositivos)
