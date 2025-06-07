@@ -1,7 +1,6 @@
 # modulos/administrador_dispositivos.py
 
 def obtener_dispositivo_por_id(dispositivos, dispositivo_id):
-
     """
     Función auxiliar para encontrar un dispositivo por su ID.
     """
@@ -11,6 +10,8 @@ def obtener_dispositivo_por_id(dispositivos, dispositivo_id):
     return None
 
 # Funcion para listar los dispositivos actuales con sus atributos y estado actual
+
+
 def listar_dispositivos(dispositivos):
     if not dispositivos:
         print("No hay dispositivos registrados.")
@@ -18,32 +19,37 @@ def listar_dispositivos(dispositivos):
 
     print("\n--- Dispositivos Actuales ---")
     for dispositivo in dispositivos:
-        print(f"ID: {dispositivo['id']}, Tipo: {dispositivo['tipo']}, Estado: {dispositivo['estado']}, Esencial: {'Sí' if dispositivo.get('es_esencial') else 'No'}")
+        print(
+            f"ID: {dispositivo['id']}, Tipo: {dispositivo['tipo']}, Estado: {dispositivo['estado']}, Esencial: {'Sí' if dispositivo.get('es_esencial') else 'No'}")
 
 # Funcion para agregar dispositivos indicando su tipo
+
+
 def agregar_dispositivo(dispositivos):
     """
-    Agrega un nuevo dispositivo a la lista, validando que el ID sea único.
+    Agrega un nuevo dispositivo a la lista, validando que el ID sea unico.
     Solicita al usuario el ID, tipo, estado y si es esencial.
     """
     nuevo_dispositivo = {}
 
-    # Solicitar y validar ID único
+    # Solicitar y validar ID unico
     while True:
-        dispositivo_id = input("Ingrese el ID del dispositivo (debe ser único): ").strip()
+        dispositivo_id = input(
+            "Ingrese el ID del dispositivo (debe ser unico): ").strip()
         if not dispositivo_id:
-            print("Error: El ID del dispositivo no puede estar vacío.")
+            print("Error: El ID del dispositivo no puede estar vacio.")
         elif obtener_dispositivo_por_id(dispositivos, dispositivo_id):
-            print(f"Error: Ya existe un dispositivo con el ID '{dispositivo_id}'. Por favor, ingrese un ID diferente.")
+            print(
+                f"Error: Ya existe un dispositivo con el ID '{dispositivo_id}'. Por favor, ingrese un ID diferente.")
         else:
             nuevo_dispositivo["id"] = dispositivo_id
             break
 
-    # Validación básica para el tipo
+    # Validacion basica para el tipo
     while True:
         tipo = input("Tipo (luz, camara, etc.): ").strip()
         if not tipo:
-            print("Error: El tipo de dispositivo no puede estar vacío.")
+            print("Error: El tipo de dispositivo no puede estar vacio.")
         else:
             nuevo_dispositivo["tipo"] = tipo
             break
@@ -60,15 +66,18 @@ def agregar_dispositivo(dispositivos):
     nuevo_dispositivo["es_esencial"] = es_esencial_input == "si"
 
     dispositivos.append(nuevo_dispositivo)
-    print(f"Dispositivo '{nuevo_dispositivo['tipo']}' con ID '{nuevo_dispositivo['id']}' agregado exitosamente.")
+    print(
+        f"Dispositivo '{nuevo_dispositivo['tipo']}' con ID '{nuevo_dispositivo['id']}' agregado exitosamente.")
 
 # Funcion para eliminar dispositivos
+
+
 def eliminar_dispositivo(dispositivos, dispositivo_id):
     """
     Elimina un dispositivo de la lista por su ID.
     """
-    dispositivo = obtener_dispositivo_por_id(dispositivos, dispositivo_id) 
-    
+    dispositivo = obtener_dispositivo_por_id(dispositivos, dispositivo_id)
+
     if dispositivo:
         dispositivos.remove(dispositivo)
         print(f"Dispositivo con ID '{dispositivo_id}' eliminado.")
@@ -76,11 +85,13 @@ def eliminar_dispositivo(dispositivos, dispositivo_id):
         print("Dispositivo no encontrado.")
 
 # Funcion para buscar un dispositivo
+
+
 def buscar_dispositivo(dispositivos, dispositivo_id):
     """
     Busca y muestra la información de un dispositivo por su ID.
     """
-    dispositivo = obtener_dispositivo_por_id(dispositivos, dispositivo_id) 
+    dispositivo = obtener_dispositivo_por_id(dispositivos, dispositivo_id)
 
     if dispositivo:
         print(f"\n--- Dispositivo Encontrado ---")
