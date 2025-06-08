@@ -3,7 +3,7 @@
 from modulos.gestion_dispositivos import mostrar_menu
 from modulos.datos_dispositivos import dispositivos
 
-# Empieza con un usuario administrador por defecto.
+# El sistema viene con un usuario administrador por defecto.
 usuarios = {
     "admin": {"contraseña": "adminpass", "rol": "administrador"}
 }
