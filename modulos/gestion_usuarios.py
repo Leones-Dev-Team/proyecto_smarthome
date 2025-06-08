@@ -1,9 +1,9 @@
-# Se crearia un diccionario para guardar los usuarios.
-# Empieza con un usuario administrador por defecto.
+# Modulo que contiene la interfaz menu para gestionar usuarios y la logica detras de dicha interfaz
+# Tambien brinda acceso a la interfaz de dispositivos y al modo ahorro
 from modulos.gestion_dispositivos import mostrar_menu
 from modulos.datos_dispositivos import dispositivos
 
-
+# Empieza con un usuario administrador por defecto.
 usuarios = {
     "admin": {"contraseña": "adminpass", "rol": "administrador"}
 }
