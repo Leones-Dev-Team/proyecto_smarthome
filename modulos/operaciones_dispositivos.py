@@ -1,4 +1,4 @@
-# modulos/administrador_dispositivos.py
+# Modulo que contiene la logica detras de la interfaz del menu para la gestion de dispositivos inteligentes
 
 def obtener_dispositivo_por_id(dispositivos, dispositivo_id):
     """

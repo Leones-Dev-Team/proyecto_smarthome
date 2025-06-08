@@ -1,4 +1,4 @@
-# Importación de los modulos que contienen la logica de los administradores de dispositivos y modo ahorro
+# Modulo con la interfaz del menu para gestionar dispositivos inteligentes y el modo ahorro
 from modulos.operaciones_dispositivos import listar_dispositivos, agregar_dispositivo, eliminar_dispositivo, buscar_dispositivo
 from modulos.modo_ahorro_energia import activar_modo_ahorro
 

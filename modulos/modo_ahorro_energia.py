@@ -1,4 +1,4 @@
-# Funcion para gestionar el modo ahorro de energia
+# Modulo con la logica del modo ahorro de energia
 def activar_modo_ahorro(dispositivos):
     """
     Funcion que activa el modo ahorro de energia apagando todos los dispositivos
