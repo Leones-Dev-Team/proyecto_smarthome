@@ -23,16 +23,28 @@ def menu_principal_dispositivos(dispositivos, volver_a=None):
             else:
                 for d in lista:
                     print(
-                        f"ID: {d['id']}, Tipo: {d['tipo']}, Estado: {d['estado']}, Esencial: {'Si' if d['es_esencial'] else 'No'}")
+                        f"ID: {d['id']}, Tipo: {d['tipo']}, Estado: {d['estado']}, "
+                        f"Esencial: {'Si' if d['es_esencial'] else 'No'}, "
+                        f"Usuario Conectado: {d.get('id_usuario_conectado','-')}, "
+                        f"Ubicación: {d.get('ubicacion','-')}, "
+                        f"Marca: {d.get('marca_dispositivo','-')}, "
+                        f"Consumo: {d.get('consumo_energetico','-')}W"
+                    )
 
         elif opcion == "2":
             nuevo = {}
             nuevo['id'] = input("ID unico: ").strip()
             nuevo['tipo'] = input("Tipo: ").strip()
-            nuevo['estado'] = input(
-                "Estado (encendido/apagado): ").strip().lower()
-            nuevo['es_esencial'] = input(
-                "¿Es esencial? (si/no): ").strip().lower() == "si"
+            nuevo['estado'] = input("Estado (encendido/apagado): ").strip().lower()
+            nuevo['es_esencial'] = input("¿Es esencial? (si/no): ").strip().lower() == "si"
+            nuevo['id_usuario_conectado'] = input("ID del usuario conectado: ").strip()
+            nuevo['ubicacion'] = input("Ubicación del dispositivo: ").strip()
+            nuevo['marca_dispositivo'] = input("Marca del dispositivo: ").strip()
+            try:
+                nuevo['consumo_energetico'] = float(input("Consumo energético (W): ").strip())
+            except:
+                nuevo['consumo_energetico'] = 0.0
+
             if sd.agregar_dispositivo(dispositivos, nuevo):
                 print("Dispositivo agregado con exito.")
             else:
@@ -50,7 +62,13 @@ def menu_principal_dispositivos(dispositivos, volver_a=None):
             dispositivo = sd.buscar_dispositivo(dispositivos, dispositivo_id)
             if dispositivo:
                 print(
-                    f"ID: {dispositivo['id']}, Tipo: {dispositivo['tipo']}, Estado: {dispositivo['estado']}, Esencial: {'Si' if dispositivo['es_esencial'] else 'No'}")
+                    f"ID: {dispositivo['id']}, Tipo: {dispositivo['tipo']}, Estado: {dispositivo['estado']}, "
+                    f"Esencial: {'Si' if dispositivo['es_esencial'] else 'No'}, "
+                    f"Usuario Conectado: {dispositivo.get('id_usuario_conectado','-')}, "
+                    f"Ubicación: {dispositivo.get('ubicacion','-')}, "
+                    f"Marca: {dispositivo.get('marca_dispositivo','-')}, "
+                    f"Consumo: {dispositivo.get('consumo_energetico','-')}W"
+                )
             else:
                 print("No se encontro el dispositivo.")
 

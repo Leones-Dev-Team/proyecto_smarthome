@@ -20,7 +20,12 @@ def registrar_usuario():
     print("\n--- Registrar Nuevo Usuario ---")
     nombre = obtener_input("Elige un nombre de usuario: ").lower()
     contraseña = obtener_input("Elige una contraseña: ")
-    if su.registrar_usuario(nombre, contraseña):
+    id_hogar = obtener_input("ID del hogar: ")
+    edad = obtener_input("Edad: ")
+    mail = obtener_input("Correo electrónico: ")
+    telefono = obtener_input("Teléfono: ")
+
+    if su.registrar_usuario(nombre, contraseña, id_hogar, edad, mail, telefono):
         print(f"¡Usuario '{nombre}' registrado con exito!")
     else:
         print("¡Ese usuario ya existe! Elija otro.")
@@ -57,8 +62,13 @@ def menu_estandar(nombre_usuario):
         if opcion == '1':
             info = su.obtener_info_usuario(nombre_usuario)
             if info:
-                print(
-                    f"\n--- Tus Datos ---\nUsuario: {info['nombre']}\nRol: {info['rol']}")
+                print("\n--- Tus Datos ---")
+                print(f"Usuario: {info['nombre']}")
+                print(f"Rol: {info['rol']}")
+                print(f"ID Hogar: {info.get('id_hogar')}")
+                print(f"Edad: {info.get('edad')}")
+                print(f"Correo: {info.get('mail')}")
+                print(f"Teléfono: {info.get('telefono')}")
             else:
                 print("No se encontro la informacion del usuario.")
             pausar_pantalla()
@@ -73,7 +83,12 @@ def menu_estandar(nombre_usuario):
                 print("Dispositivos conectados:")
                 for idx, dispositivo in enumerate(dispositivos, 1):
                     print(
-                        f"{idx}. {dispositivo['tipo']} (ID: {dispositivo['id']}, Estado: {dispositivo['estado']})")
+                        f"{idx}. {dispositivo['tipo']} "
+                        f"(ID: {dispositivo['id']}, Estado: {dispositivo['estado']}, "
+                        f"Ubicación: {dispositivo.get('ubicacion','-')}, "
+                        f"Marca: {dispositivo.get('marca_dispositivo','-')}, "
+                        f"Consumo: {dispositivo.get('consumo_energetico','-')}W)"
+                    )
             pausar_pantalla()
         elif opcion == '0':
             print(f"Cerrando sesion de {nombre_usuario}.")
