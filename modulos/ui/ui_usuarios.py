@@ -1,10 +1,9 @@
-# ui_usuarios.py
+# modulos/ui/ui_usuarios.py
 
 from modulos.servicios import servicios_usuarios as su
 from modulos.datos.datos_dispositivos import dispositivos
 from modulos.ui.ui_dispositivos import menu_principal_dispositivos
 from modulos.ui.ui_utils import obtener_input, pausar_pantalla
-
 
 def registrar_usuario():
     """Crea un nuevo usuario estándar."""
@@ -20,7 +19,7 @@ def registrar_usuario():
     if su.registrar_usuario(nombre, contraseña, id_hogar, edad, mail, telefono):
         print(f"¡Usuario '{nombre}' registrado con éxito!")
     else:
-        print("Ese usuario ya existe. Elige otro nombre.")
+        print("Ese usuario ya existe o el hogar no existe.")
     pausar_pantalla()
 
 
@@ -77,7 +76,7 @@ def menu_estandar(nombre_usuario):
             else:
                 for d in dispositivos:
                     print(
-                        f"ID: {d['id_dispositivo']}, Tipo: {d['tipo']}, Estado: {d['estado']}, "
+                        f"ID: {d['id_dispositivo']}, Tipo: {d['tipo_dispositivo']}, Estado: {d['estado']}, "
                         f"Esencial: {'Sí' if d['es_esencial'] else 'No'}, "
                         f"Usuario Conectado: {d.get('id_usuario_conectado','-')}, "
                         f"Ubicación: {d.get('ubicacion','-')}, "
