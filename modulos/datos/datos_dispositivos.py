@@ -1,7 +1,4 @@
-# --- MODULO DE DISPOSITIVOS ---
-# Este archivo define una lista de dispositivos reutilizable por todo el sistema.
-# Es un prototipo inicial. En el futuro, estos datos se cargaran desde una base de datos.
-
+# datos_dispositivos.py
 """
 Este modulo contiene la lista inicial de dispositivos.
 Actualmente es un prototipo para pruebas, en el futuro se integrara con base de datos.
