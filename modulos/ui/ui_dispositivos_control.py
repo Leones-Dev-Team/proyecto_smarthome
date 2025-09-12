@@ -1,18 +1,10 @@
-# modulos/ui/ui_dispositivos_control.py
+# ui_dispositivos_control.py
 
 import re
+from modulos.ui.ui_utils import obtener_input, pausar_pantalla
 
+# Nota: esta lista se eliminará cuando Jonny cree repositorio_dispositivos_control.
 dispositivos_control = []
-
-
-def obtener_input(mensaje):
-    """Pide al usuario que escriba algo y lo devuelve limpio."""
-    return input(mensaje).strip()
-
-
-def pausar_pantalla():
-    """Espera que el usuario presione Enter."""
-    input("\nPresiona Enter para continuar...")
 
 
 def validar_hora(hora):
@@ -27,12 +19,12 @@ def agregar_dispositivo_control():
 
     # Validar ID único
     for d in dispositivos_control:
-        if d["id"] == nuevo_id:
+        if d["id_dispositivo_control"] == nuevo_id:
             print("Ya existe un dispositivo con ese ID. Intenta con otro.")
             pausar_pantalla()
             return
 
-    tipo = obtener_input("Tipo (ej: sensor, termostato, hub): ")
+    tipo = obtener_input("Tipo de dispositivo de control (ej: sensor, termostato, hub): ")
     ubicacion = obtener_input("Ubicación: ")
     id_usuario_conectado = obtener_input("ID del usuario conectado: ")
     hora_conexion = obtener_input("Hora de conexión (HH:MM): ")
@@ -49,8 +41,8 @@ def agregar_dispositivo_control():
         return
 
     nuevo = {
-        "id": nuevo_id,
-        "tipo": tipo,
+        "id_dispositivo_control": nuevo_id,
+        "tipo_dispositivo_control": tipo,
         "ubicacion": ubicacion,
         "id_usuario_conectado": id_usuario_conectado,
         "hora_conexion": hora_conexion
@@ -68,8 +60,9 @@ def listar_dispositivos_control():
     else:
         for d in dispositivos_control:
             print(
-                f"ID: {d['id']}, Tipo: {d['tipo']}, Ubicación: {d['ubicacion']}, "
-                f"Usuario: {d['id_usuario_conectado']}, Hora conexión: {d['hora_conexion']}"
+                f"ID: {d['id_dispositivo_control']}, Tipo: {d['tipo_dispositivo_control']}, "
+                f"Ubicación: {d['ubicacion']}, Usuario: {d['id_usuario_conectado']}, "
+                f"Hora conexión: {d['hora_conexion']}"
             )
     pausar_pantalla()
 

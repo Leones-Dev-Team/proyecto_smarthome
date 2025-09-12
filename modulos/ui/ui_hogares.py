@@ -1,16 +1,9 @@
-# modulos/ui/ui_hogares.py
+# ui_hogares.py
 
+from modulos.ui.ui_utils import obtener_input, pausar_pantalla
+
+# Nota: esta lista se eliminará cuando Jonny cree repositorio_hogares.
 hogares = []
-
-
-def obtener_input(mensaje):
-    """Pide al usuario que escriba algo y lo devuelve limpio."""
-    return input(mensaje).strip()
-
-
-def pausar_pantalla():
-    """Espera que el usuario presione Enter."""
-    input("\nPresiona Enter para continuar...")
 
 
 def agregar_hogar():
@@ -20,7 +13,7 @@ def agregar_hogar():
 
     # Validar que el ID no esté duplicado
     for h in hogares:
-        if h["id"] == nuevo_id:
+        if h["id_hogar"] == nuevo_id:
             print("Ya existe un hogar con ese ID. Intenta con otro.")
             pausar_pantalla()
             return
@@ -34,9 +27,9 @@ def agregar_hogar():
         return
 
     nuevo = {
-        "id": nuevo_id,
+        "id_hogar": nuevo_id,
         "ubicacion": ubicacion,
-        "tipo_vivienda": tipo_vivienda,
+        "tipo_de_vivienda": tipo_vivienda,
     }
     hogares.append(nuevo)
     print("Hogar agregado con éxito.")
@@ -50,7 +43,7 @@ def listar_hogares():
         print("No hay hogares registrados.")
     else:
         for h in hogares:
-            print(f"ID: {h['id']}, Ubicación: {h['ubicacion']}, Tipo: {h['tipo_vivienda']}")
+            print(f"ID: {h['id_hogar']}, Ubicación: {h['ubicacion']}, Tipo: {h['tipo_de_vivienda']}")
     pausar_pantalla()
 
 

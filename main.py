@@ -15,15 +15,15 @@ Inicia la aplicación mostrando el menú global, que permite:
   * Activar el modo ahorro de energía
 
 - Gestión de hogares:
-  * Agregar y listar hogares
+  * Agregar y listar hogares (solo administrador)
 
 - Gestión de dispositivos de control:
-  * Agregar y listar dispositivos de control
+  * Agregar y listar dispositivos de control (solo administrador)
 
 - Salir del sistema
 """
 
-from modulos.ui.ui_usuarios import menu_principal_usuarios
+from modulos.ui.ui_usuarios import menu_principal_usuarios, login_usuario
 from modulos.ui.ui_dispositivos import menu_principal_dispositivos
 from modulos.ui.ui_hogares import menu_principal_hogares
 from modulos.ui.ui_dispositivos_control import menu_principal_dispositivos_control
@@ -31,30 +31,41 @@ from modulos.datos.datos_dispositivos import dispositivos
 
 
 def menu_global():
+    # Primero pedimos login
+    usuario_actual = login_usuario()
+    if not usuario_actual:
+        print("No se pudo iniciar sesión. Cerrando sistema...")
+        return
+
+    rol = usuario_actual.get("rol", "estandar")  # por defecto estándar
+
     while True:
-        print("""
---- Menú Global ---
-1. Gestión de usuarios
-2. Gestión de dispositivos
-3. Gestión de hogares
-4. Gestión de dispositivos de control
-0. Salir
-""")
+        print("\n--- Menú Global ---")
+        print("1. Gestión de usuarios")
+        print("2. Gestión de dispositivos")
+
+        # Solo admin puede ver hogares y dispositivos de control
+        if rol == "administrador":
+            print("3. Gestión de hogares")
+            print("4. Gestión de dispositivos de control")
+
+        print("0. Salir")
+
         opcion = input("Elige una opción: ").strip()
 
         if opcion == "1":
             menu_principal_usuarios()
         elif opcion == "2":
             menu_principal_dispositivos(dispositivos)
-        elif opcion == "3":
+        elif opcion == "3" and rol == "administrador":
             menu_principal_hogares()
-        elif opcion == "4":
+        elif opcion == "4" and rol == "administrador":
             menu_principal_dispositivos_control()
         elif opcion == "0":
             print("Saliendo del sistema...")
             break
         else:
-            print("Opción no válida.")
+            print("Opción no válida o sin permisos.")
 
 
 if __name__ == "__main__":

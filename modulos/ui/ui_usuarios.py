@@ -1,18 +1,9 @@
-# modulos/ui/ui_usuarios.py
+# ui_usuarios.py
 
 from modulos.servicios import servicios_usuarios as su
 from modulos.datos.datos_dispositivos import dispositivos
 from modulos.ui.ui_dispositivos import menu_principal_dispositivos
-
-
-def obtener_input(mensaje):
-    """Pide al usuario que escriba algo y lo devuelve limpio."""
-    return input(mensaje).strip()
-
-
-def pausar_pantalla():
-    """Espera que el usuario presione Enter."""
-    input("\nPresiona Enter para continuar...")
+from modulos.ui.ui_utils import obtener_input, pausar_pantalla
 
 
 def registrar_usuario():
@@ -22,15 +13,7 @@ def registrar_usuario():
     contraseña = obtener_input("Elige una contraseña: ")
     id_hogar = obtener_input("ID del hogar: ")
 
-    # Validación básica de edad
-    while True:
-        edad = obtener_input("Edad: ")
-        if edad.isdigit():
-            edad = int(edad)
-            break
-        else:
-            print("La edad debe ser un número válido.")
-
+    edad = obtener_input("Edad: ", int)
     mail = obtener_input("Correo electrónico: ")
     telefono = obtener_input("Teléfono: ")
 
@@ -49,7 +32,7 @@ def iniciar_sesion():
 
     usuario, rol = su.iniciar_sesion(nombre, contra)
     if usuario:
-        print(f"¡Bienvenido/a, {nombre}!")
+        print(f"¡Bienvenido/a, {nombre}! (Rol: {rol})")
         return usuario, rol
     else:
         print("Usuario o contraseña incorrectos.")
@@ -94,7 +77,7 @@ def menu_estandar(nombre_usuario):
             else:
                 for d in dispositivos:
                     print(
-                        f"ID: {d['id']}, Tipo: {d['tipo']}, Estado: {d['estado']}, "
+                        f"ID: {d['id_dispositivo']}, Tipo: {d['tipo']}, Estado: {d['estado']}, "
                         f"Esencial: {'Sí' if d['es_esencial'] else 'No'}, "
                         f"Usuario Conectado: {d.get('id_usuario_conectado','-')}, "
                         f"Ubicación: {d.get('ubicacion','-')}, "

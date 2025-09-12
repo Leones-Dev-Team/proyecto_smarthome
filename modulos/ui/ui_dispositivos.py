@@ -1,16 +1,7 @@
-# modulos/ui/ui_dispositivos.py
+# ui_dispositivos.py
 
 from modulos.servicios import servicios_dispositivos as sd
-
-
-def obtener_input(mensaje):
-    """Pide al usuario que escriba algo y lo devuelve limpio."""
-    return input(mensaje).strip()
-
-
-def pausar_pantalla():
-    """Espera que el usuario presione Enter."""
-    input("\nPresiona Enter para continuar...")
+from modulos.ui.ui_utils import obtener_input, pausar_pantalla
 
 
 def menu_principal_dispositivos(dispositivos, volver_a=None):
@@ -34,7 +25,7 @@ def menu_principal_dispositivos(dispositivos, volver_a=None):
             else:
                 for d in lista:
                     print(
-                        f"ID: {d['id']}, Tipo: {d['tipo']}, Estado: {d['estado']}, "
+                        f"ID: {d['id_dispositivo']}, Tipo: {d['tipo_dispositivo']}, Estado: {d['estado']}, "
                         f"Esencial: {'Sí' if d['es_esencial'] else 'No'}, "
                         f"Usuario Conectado: {d.get('id_usuario_conectado','-')}, "
                         f"Ubicación: {d.get('ubicacion','-')}, "
@@ -46,13 +37,13 @@ def menu_principal_dispositivos(dispositivos, volver_a=None):
         elif opcion == "2":
             print("\n--- Agregar Dispositivo ---")
             nuevo = {}
-            nuevo['id'] = obtener_input("ID único: ")
-            if not nuevo['id']:
+            nuevo['id_dispositivo'] = obtener_input("ID único: ")
+            if not nuevo['id_dispositivo']:
                 print("El ID no puede estar vacío.")
                 pausar_pantalla()
                 continue
 
-            nuevo['tipo'] = obtener_input("Tipo: ")
+            nuevo['tipo_dispositivo'] = obtener_input("Tipo: ")
             nuevo['estado'] = obtener_input("Estado (encendido/apagado): ").lower()
             if nuevo['estado'] not in ["encendido", "apagado"]:
                 print("Estado inválido. Debe ser 'encendido' o 'apagado'.")
@@ -89,7 +80,7 @@ def menu_principal_dispositivos(dispositivos, volver_a=None):
             dispositivo = sd.buscar_dispositivo(dispositivos, dispositivo_id)
             if dispositivo:
                 print(
-                    f"ID: {dispositivo['id']}, Tipo: {dispositivo['tipo']}, Estado: {dispositivo['estado']}, "
+                    f"ID: {dispositivo['id_dispositivo']}, Tipo: {dispositivo['tipo_dispositivo']}, Estado: {dispositivo['estado']}, "
                     f"Esencial: {'Sí' if dispositivo['es_esencial'] else 'No'}, "
                     f"Usuario Conectado: {dispositivo.get('id_usuario_conectado','-')}, "
                     f"Ubicación: {dispositivo.get('ubicacion','-')}, "
@@ -105,7 +96,7 @@ def menu_principal_dispositivos(dispositivos, volver_a=None):
             if apagados == 0:
                 print("Todos los dispositivos no esenciales ya estaban apagados.")
             else:
-                print(f" {apagados} dispositivo(s) apagados para ahorrar energía.")
+                print(f"{apagados} dispositivo(s) apagados para ahorrar energía.")
             pausar_pantalla()
 
         elif opcion == "0":
