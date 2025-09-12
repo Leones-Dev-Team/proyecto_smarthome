@@ -1,32 +1,76 @@
-# ui_hogares.py
+# modulos/ui/ui_hogares.py
 
 hogares = []
 
 
+def obtener_input(mensaje):
+    """Pide al usuario que escriba algo y lo devuelve limpio."""
+    return input(mensaje).strip()
+
+
+def pausar_pantalla():
+    """Espera que el usuario presione Enter."""
+    input("\nPresiona Enter para continuar...")
+
+
+def agregar_hogar():
+    """Agrega un nuevo hogar a la lista de hogares."""
+    print("\n--- Agregar Hogar ---")
+    nuevo_id = obtener_input("ID del hogar: ")
+
+    # Validar que el ID no esté duplicado
+    for h in hogares:
+        if h["id"] == nuevo_id:
+            print("Ya existe un hogar con ese ID. Intenta con otro.")
+            pausar_pantalla()
+            return
+
+    ubicacion = obtener_input("Ubicación: ")
+    tipo_vivienda = obtener_input("Tipo de vivienda (casa/departamento/etc.): ")
+
+    if not nuevo_id or not ubicacion or not tipo_vivienda:
+        print("Todos los campos son obligatorios.")
+        pausar_pantalla()
+        return
+
+    nuevo = {
+        "id": nuevo_id,
+        "ubicacion": ubicacion,
+        "tipo_vivienda": tipo_vivienda,
+    }
+    hogares.append(nuevo)
+    print("Hogar agregado con éxito.")
+    pausar_pantalla()
+
+
+def listar_hogares():
+    """Muestra todos los hogares registrados."""
+    print("\n--- Lista de Hogares ---")
+    if not hogares:
+        print("No hay hogares registrados.")
+    else:
+        for h in hogares:
+            print(f"ID: {h['id']}, Ubicación: {h['ubicacion']}, Tipo: {h['tipo_vivienda']}")
+    pausar_pantalla()
+
+
 def menu_principal_hogares():
+    """Menú principal para gestionar hogares."""
     while True:
         print("""
-        --- Menu Hogares ---
+        --- Menú de Hogares ---
         1. Agregar hogar
         2. Listar hogares
-        0. Volver
+        0. Volver al menú global
         """)
-        opcion = input("Elige una opcion: ").strip()
+        opcion = obtener_input("Elige una opción: ")
 
         if opcion == "1":
-            nuevo = {}
-            nuevo["id"] = input("ID del hogar: ").strip()
-            nuevo["direccion"] = input("Dirección: ").strip()
-            nuevo["propietario"] = input("Nombre del propietario: ").strip()
-            hogares.append(nuevo)
-            print("Hogar agregado con éxito.")
+            agregar_hogar()
         elif opcion == "2":
-            if not hogares:
-                print("No hay hogares registrados.")
-            else:
-                for h in hogares:
-                    print(f"ID: {h['id']}, Dirección: {h['direccion']}, Propietario: {h['propietario']}")
+            listar_hogares()
         elif opcion == "0":
+            print("Saliendo del menú de hogares.")
             break
         else:
-            print("Opción inválida.")
+            print("Opción no válida. Inténtalo de nuevo.")

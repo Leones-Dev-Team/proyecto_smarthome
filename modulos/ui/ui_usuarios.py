@@ -16,30 +16,40 @@ def pausar_pantalla():
 
 
 def registrar_usuario():
-    """Crea un nuevo usuario estandar."""
+    """Crea un nuevo usuario estándar."""
     print("\n--- Registrar Nuevo Usuario ---")
     nombre = obtener_input("Elige un nombre de usuario: ").lower()
     contraseña = obtener_input("Elige una contraseña: ")
     id_hogar = obtener_input("ID del hogar: ")
-    edad = obtener_input("Edad: ")
+
+    # Validación básica de edad
+    while True:
+        edad = obtener_input("Edad: ")
+        if edad.isdigit():
+            edad = int(edad)
+            break
+        else:
+            print("La edad debe ser un número válido.")
+
     mail = obtener_input("Correo electrónico: ")
     telefono = obtener_input("Teléfono: ")
 
     if su.registrar_usuario(nombre, contraseña, id_hogar, edad, mail, telefono):
-        print(f"¡Usuario '{nombre}' registrado con exito!")
+        print(f"¡Usuario '{nombre}' registrado con éxito!")
     else:
-        print("¡Ese usuario ya existe! Elija otro.")
+        print("Ese usuario ya existe. Elige otro nombre.")
     pausar_pantalla()
 
 
 def iniciar_sesion():
     """Permite entrar al sistema. Devuelve usuario y rol si es correcto."""
-    print("\n--- Iniciar Sesion ---")
+    print("\n--- Iniciar Sesión ---")
     nombre = obtener_input("Usuario: ").lower()
     contra = obtener_input("Contraseña: ")
+
     usuario, rol = su.iniciar_sesion(nombre, contra)
     if usuario:
-        print(f"¡Bienvenido, {nombre}!")
+        print(f"¡Bienvenido/a, {nombre}!")
         return usuario, rol
     else:
         print("Usuario o contraseña incorrectos.")
@@ -48,16 +58,16 @@ def iniciar_sesion():
 
 
 def menu_estandar(nombre_usuario):
-    """Muestra opciones para usuarios estandar."""
+    """Muestra opciones para usuarios estándar."""
     while True:
-        print(f"\n--- Menu Estandar ({nombre_usuario}) ---")
+        print(f"\n--- Menú Estándar ({nombre_usuario}) ---")
         print("""
-            1. Ver mis datos
-            2. Activar/Ejecutar automatizacion
-            3. Consultar dispositivos
-            0. Cerrar sesion
-            """)
-        opcion = obtener_input("Elige una opcion: ")
+        1. Ver mis datos
+        2. Activar/Ejecutar automatización
+        3. Consultar dispositivos
+        0. Cerrar sesión
+        """)
+        opcion = obtener_input("Elige una opción: ")
 
         if opcion == '1':
             info = su.obtener_info_usuario(nombre_usuario)
@@ -67,85 +77,84 @@ def menu_estandar(nombre_usuario):
                 print(f"Rol: {info['rol']}")
                 print(f"ID Hogar: {info.get('id_hogar')}")
                 print(f"Edad: {info.get('edad')}")
-                print(f"Correo: {info.get('mail')}")
+                print(f"Correo electrónico: {info.get('mail')}")
                 print(f"Teléfono: {info.get('telefono')}")
             else:
-                print("No se encontro la informacion del usuario.")
+                print("No se encontró la información del usuario.")
             pausar_pantalla()
+
         elif opcion == '2':
-            print("\n--- Automatizacion ---\n¡Automatizacion predefinida activada!")
+            print("\n--- Automatización ---\n¡Automatización predefinida activada!")
             pausar_pantalla()
+
         elif opcion == '3':
             print("\n--- Dispositivos ---")
             if not dispositivos:
                 print("No hay dispositivos conectados.")
             else:
-                print("Dispositivos conectados:")
-                for idx, dispositivo in enumerate(dispositivos, 1):
+                for d in dispositivos:
                     print(
-                        f"{idx}. {dispositivo['tipo']} "
-                        f"(ID: {dispositivo['id']}, Estado: {dispositivo['estado']}, "
-                        f"Ubicación: {dispositivo.get('ubicacion','-')}, "
-                        f"Marca: {dispositivo.get('marca_dispositivo','-')}, "
-                        f"Consumo: {dispositivo.get('consumo_energetico','-')}W)"
+                        f"ID: {d['id']}, Tipo: {d['tipo']}, Estado: {d['estado']}, "
+                        f"Esencial: {'Sí' if d['es_esencial'] else 'No'}, "
+                        f"Usuario Conectado: {d.get('id_usuario_conectado','-')}, "
+                        f"Ubicación: {d.get('ubicacion','-')}, "
+                        f"Marca: {d.get('marca_dispositivo','-')}, "
+                        f"Consumo: {d.get('consumo_energetico','-')}W"
                     )
             pausar_pantalla()
+
         elif opcion == '0':
-            print(f"Cerrando sesion de {nombre_usuario}.")
+            print(f"Cerrando sesión de {nombre_usuario}.")
             break
         else:
-            print("Opcion no valida. Intentalo de nuevo.")
+            print("Opción no válida. Inténtalo de nuevo.")
 
 
 def menu_administrador(nombre_usuario):
     """Muestra opciones para usuarios administradores."""
     while True:
-        print(f"\n--- Menu Administrador --- ({nombre_usuario}) ---")
+        print(f"\n--- Menú Administrador ({nombre_usuario}) ---")
         print("""
-            1. Consultar automatizaciones activas
-            2. Gestionar dispositivos
-            3. Modificar rol de un usuario
-            0. Cerrar sesion
-            """)
-        opcion = obtener_input("Elige una opcion: ")
+        1. Consultar automatizaciones activas
+        2. Gestionar dispositivos
+        3. Modificar rol de un usuario
+        0. Cerrar sesión
+        """)
+        opcion = obtener_input("Elige una opción: ")
 
         if opcion == '1':
-            print(
-                "\n--- Automatizaciones Activas ---\nMostrando automatizaciones en curso.")
+            print("\n--- Automatizaciones Activas ---\nMostrando automatizaciones en curso.")
             pausar_pantalla()
+
         elif opcion == '2':
-            print("\n--- Gestionar Dispositivos ---")
-            menu_principal_dispositivos(
-                dispositivos, volver_a=menu_administrador)
+            menu_principal_dispositivos(dispositivos, volver_a=menu_administrador)
+
         elif opcion == '3':
-            print("\n--- Cambiar Rol de Usuario ---")
-            usuario_a_modificar = obtener_input(
-                "Nombre de usuario para cambiar su rol: ").lower()
-            nuevo_rol = obtener_input(
-                "Nuevo rol (estandar/administrador): ").lower()
+            usuario_a_modificar = obtener_input("Usuario para cambiar su rol: ").lower()
+            nuevo_rol = obtener_input("Nuevo rol (estándar/administrador): ").lower()
             if su.cambiar_rol(usuario_a_modificar, nuevo_rol):
-                print(
-                    f"¡Rol de '{usuario_a_modificar}' cambiado a '{nuevo_rol}'!")
+                print(f"¡Rol de '{usuario_a_modificar}' cambiado a '{nuevo_rol}'!")
             else:
-                print("Usuario no encontrado o rol invalido.")
+                print("Usuario no encontrado o rol inválido.")
             pausar_pantalla()
+
         elif opcion == '0':
-            print(f"Cerrando sesion de {nombre_usuario}.")
+            print(f"Cerrando sesión de {nombre_usuario}.")
             break
         else:
-            print("Opcion no valida. Intentalo de nuevo.")
+            print("Opción no válida. Inténtalo de nuevo.")
 
 
 def menu_principal_usuarios():
-    """El menu principal que se muestra al inicio."""
+    """El menú principal de gestión de usuarios."""
     while True:
         print("""
-            --- Menu de Usuarios ---
-            1. Registrar nuevo usuario
-            2. Iniciar sesion
-            0. Salir
-            """)
-        opcion = obtener_input("Elige una opcion: ")
+        --- Menú de Usuarios ---
+        1. Registrar nuevo usuario
+        2. Iniciar sesión
+        0. Volver al menú global
+        """)
+        opcion = obtener_input("Elige una opción: ")
 
         if opcion == '1':
             registrar_usuario()
@@ -157,7 +166,7 @@ def menu_principal_usuarios():
                 elif rol_actual == "administrador":
                     menu_administrador(usuario_actual)
         elif opcion == '0':
-            print("Gracias por usar el programa ¡Hasta luego!")
+            print("Saliendo del menú de usuarios.")
             break
         else:
-            print("Opcion no valida. Por favor, elige 1, 2 o 0.")
+            print("Opción no válida. Por favor, elige 1, 2 o 0.")

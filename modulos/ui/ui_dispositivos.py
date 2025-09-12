@@ -1,20 +1,31 @@
-# ui_dispositivos.py
+# modulos/ui/ui_dispositivos.py
 
 from modulos.servicios import servicios_dispositivos as sd
 
 
+def obtener_input(mensaje):
+    """Pide al usuario que escriba algo y lo devuelve limpio."""
+    return input(mensaje).strip()
+
+
+def pausar_pantalla():
+    """Espera que el usuario presione Enter."""
+    input("\nPresiona Enter para continuar...")
+
+
 def menu_principal_dispositivos(dispositivos, volver_a=None):
+    """Menú principal para gestionar dispositivos."""
     while True:
         print("""
-            --- Menu Dispositivos ---
+            --- Menú de Dispositivos ---
             1. Listar dispositivos
             2. Agregar dispositivo
             3. Eliminar dispositivo
             4. Buscar dispositivo
-            5. Activar Modo Ahorro de Energia
-            0. Volver
+            5. Activar Modo Ahorro de Energía
+            0. Volver al menú anterior
             """)
-        opcion = input("Seleccione una Opcion: ").strip()
+        opcion = obtener_input("Seleccione una opción: ")
 
         if opcion == "1":
             lista = sd.listar_dispositivos(dispositivos)
@@ -24,65 +35,85 @@ def menu_principal_dispositivos(dispositivos, volver_a=None):
                 for d in lista:
                     print(
                         f"ID: {d['id']}, Tipo: {d['tipo']}, Estado: {d['estado']}, "
-                        f"Esencial: {'Si' if d['es_esencial'] else 'No'}, "
+                        f"Esencial: {'Sí' if d['es_esencial'] else 'No'}, "
                         f"Usuario Conectado: {d.get('id_usuario_conectado','-')}, "
                         f"Ubicación: {d.get('ubicacion','-')}, "
                         f"Marca: {d.get('marca_dispositivo','-')}, "
                         f"Consumo: {d.get('consumo_energetico','-')}W"
                     )
+            pausar_pantalla()
 
         elif opcion == "2":
+            print("\n--- Agregar Dispositivo ---")
             nuevo = {}
-            nuevo['id'] = input("ID unico: ").strip()
-            nuevo['tipo'] = input("Tipo: ").strip()
-            nuevo['estado'] = input("Estado (encendido/apagado): ").strip().lower()
-            nuevo['es_esencial'] = input("¿Es esencial? (si/no): ").strip().lower() == "si"
-            nuevo['id_usuario_conectado'] = input("ID del usuario conectado: ").strip()
-            nuevo['ubicacion'] = input("Ubicación del dispositivo: ").strip()
-            nuevo['marca_dispositivo'] = input("Marca del dispositivo: ").strip()
+            nuevo['id'] = obtener_input("ID único: ")
+            if not nuevo['id']:
+                print("El ID no puede estar vacío.")
+                pausar_pantalla()
+                continue
+
+            nuevo['tipo'] = obtener_input("Tipo: ")
+            nuevo['estado'] = obtener_input("Estado (encendido/apagado): ").lower()
+            if nuevo['estado'] not in ["encendido", "apagado"]:
+                print("Estado inválido. Debe ser 'encendido' o 'apagado'.")
+                pausar_pantalla()
+                continue
+
+            nuevo['es_esencial'] = obtener_input("¿Es esencial? (sí/no): ").lower() == "sí"
+            nuevo['id_usuario_conectado'] = obtener_input("ID del usuario conectado: ")
+            nuevo['ubicacion'] = obtener_input("Ubicación del dispositivo: ")
+            nuevo['marca_dispositivo'] = obtener_input("Marca del dispositivo: ")
+
             try:
-                nuevo['consumo_energetico'] = float(input("Consumo energético (W): ").strip())
-            except:
+                nuevo['consumo_energetico'] = float(obtener_input("Consumo energético (W): "))
+            except ValueError:
+                print("Consumo inválido. Se asignará 0W.")
                 nuevo['consumo_energetico'] = 0.0
 
             if sd.agregar_dispositivo(dispositivos, nuevo):
-                print("Dispositivo agregado con exito.")
+                print("Dispositivo agregado con éxito.")
             else:
-                print("Error: ID ya existente.")
+                print("⚠ Error: ID ya existente.")
+            pausar_pantalla()
 
         elif opcion == "3":
-            dispositivo_id = input("ID a eliminar: ").strip()
+            dispositivo_id = obtener_input("ID a eliminar: ")
             if sd.eliminar_dispositivo(dispositivos, dispositivo_id):
                 print("Dispositivo eliminado.")
             else:
-                print("No se encontro el dispositivo.")
+                print("No se encontró el dispositivo.")
+            pausar_pantalla()
 
         elif opcion == "4":
-            dispositivo_id = input("ID a buscar: ").strip()
+            dispositivo_id = obtener_input("ID a buscar: ")
             dispositivo = sd.buscar_dispositivo(dispositivos, dispositivo_id)
             if dispositivo:
                 print(
                     f"ID: {dispositivo['id']}, Tipo: {dispositivo['tipo']}, Estado: {dispositivo['estado']}, "
-                    f"Esencial: {'Si' if dispositivo['es_esencial'] else 'No'}, "
+                    f"Esencial: {'Sí' if dispositivo['es_esencial'] else 'No'}, "
                     f"Usuario Conectado: {dispositivo.get('id_usuario_conectado','-')}, "
                     f"Ubicación: {dispositivo.get('ubicacion','-')}, "
                     f"Marca: {dispositivo.get('marca_dispositivo','-')}, "
                     f"Consumo: {dispositivo.get('consumo_energetico','-')}W"
                 )
             else:
-                print("No se encontro el dispositivo.")
+                print("No se encontró el dispositivo.")
+            pausar_pantalla()
 
         elif opcion == "5":
             apagados = sd.activar_modo_ahorro(dispositivos)
             if apagados == 0:
                 print("Todos los dispositivos no esenciales ya estaban apagados.")
             else:
-                print(f"{apagados} dispositivo(s) apagados para ahorrar Energia.")
+                print(f" {apagados} dispositivo(s) apagados para ahorrar energía.")
+            pausar_pantalla()
 
         elif opcion == "0":
             if volver_a:
                 return
             else:
                 break
+
         else:
-            print("Opcion incorrecta.")
+            print("Opción no válida. Inténtalo de nuevo.")
+            pausar_pantalla()
