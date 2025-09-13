@@ -25,6 +25,10 @@ env/
 .vscode/
 .history/
 
+# --- Visual Studio Community ---
+.vs/
+
+
 # --- Archivos de pruebas ---
 .pytest_cache/
 .coverage
