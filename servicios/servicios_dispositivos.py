@@ -1,10 +1,8 @@
-# Módulo de servicios para la gestión de dispositivos.
-# Este archivo contiene las funciones que permiten agregar, listar y buscar dispositivos.
+# modulos/servicios/servicios_dispositivos.py
 import uuid
 from .servicios_usuarios import buscar_usuario_por_id
-from .servicios_historial import agregar_evento_historial
 
-# Simulación de una base de datos en memoria para los dispositivos.
+# Simulación de una base de datos o almacenamiento en memoria.
 _dispositivos = []
 
 def agregar_dispositivo(id_usuario_conectado: str, nombre: str, tipo: str, estado: bool):
@@ -42,14 +40,6 @@ def agregar_dispositivo(id_usuario_conectado: str, nombre: str, tipo: str, estad
     
     _dispositivos.append(nuevo_dispositivo)
     print(f"Dispositivo agregado: {nuevo_dispositivo}")
-
-    # Registrar el evento en el historial.
-    agregar_evento_historial(
-        id_usuario_conectado, 
-        "dispositivo", 
-        f"Se agregó un nuevo dispositivo: {nombre} ({tipo})."
-    )
-
     return nuevo_dispositivo, 201
 
 def listar_dispositivos():
@@ -75,3 +65,4 @@ def buscar_dispositivo_por_id(id_dispositivo: str):
         if dispositivo.get("id_dispositivo") == id_dispositivo:
             return dispositivo
     return None
+
