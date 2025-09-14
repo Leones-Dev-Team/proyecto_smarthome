@@ -1,9 +1,10 @@
 # modulos/servicios/servicios_dispositivos_control.py
 import uuid
-from proyecto_smarthome.modulos.servicios.servicios_hogares import buscar_hogar_por_id
+from servicios.servicios_hogares import buscar_hogar_por_id
 
 # Simulación de una base de datos en memoria
 _dispositivos_control = []
+
 
 def crear_dispositivo_control(id_hogar: str, nombre: str, tipo: str, estado: bool):
     """
@@ -17,8 +18,8 @@ def crear_dispositivo_control(id_hogar: str, nombre: str, tipo: str, estado: boo
 
     Returns:
         tuple: Un diccionario con los datos del nuevo dispositivo y un código de estado (201).
-               En caso de error, retorna un diccionario con un mensaje de error y un
-               código de estado (400 o 404).
+            En caso de error, retorna un diccionario con un mensaje de error y un
+            código de estado (400 o 404).
     """
     # Validaciones de tipo de dato
     if not isinstance(id_hogar, str) or not isinstance(nombre, str) or not isinstance(tipo, str) or not isinstance(estado, bool):
@@ -39,6 +40,7 @@ def crear_dispositivo_control(id_hogar: str, nombre: str, tipo: str, estado: boo
     _dispositivos_control.append(nuevo_dispositivo)
     return nuevo_dispositivo, 201
 
+
 def listar_dispositivos_control():
     """
     Retorna una lista de todos los dispositivos de control.
@@ -47,6 +49,7 @@ def listar_dispositivos_control():
         list: Una lista de diccionarios, donde cada diccionario representa un dispositivo.
     """
     return _dispositivos_control
+
 
 def buscar_dispositivo_control_por_id(id_dispositivo: str):
     """

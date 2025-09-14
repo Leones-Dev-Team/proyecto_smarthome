@@ -23,7 +23,7 @@ Inicia la aplicación mostrando el menú global, que permite:
 - Salir del sistema
 """
 
-from modulos.ui.ui_usuarios import menu_principal_usuarios, login_usuario
+from modulos.ui.ui_usuarios import menu_principal_usuarios, iniciar_sesion
 from modulos.ui.ui_dispositivos import menu_principal_dispositivos
 from modulos.ui.ui_hogares import menu_principal_hogares
 from modulos.ui.ui_dispositivos_control import menu_principal_dispositivos_control
@@ -32,7 +32,7 @@ from modulos.datos.datos_dispositivos import dispositivos
 
 def menu_global():
     # Primero pedimos login
-    usuario_actual = login_usuario()
+    usuario_actual = iniciar_sesion()
     if not usuario_actual:
         print("No se pudo iniciar sesión. Cerrando sistema...")
         return

@@ -4,6 +4,7 @@
 
 _dispositivos = {}
 
+
 def crear_dispositivo(
     id_dispositivo,
     id_usuario_conectado=None,
@@ -27,11 +28,20 @@ def crear_dispositivo(
         "consumo_energetico": consumo_energetico
     }
 
+
+"""
+Todo lo que está aqui abajo debe reemplazarse por llamados e importaciones
+de lógica perteneciente a servicios/servicios_dispositivos.py
+"""
+
+
 def obtener_dispositivo(id_dispositivo):
     return _dispositivos.get(id_dispositivo)
 
+
 def listar_dispositivos():
     return dict(_dispositivos)
+
 
 def obtener_dispositivo_por_id(dispositivos, dispositivo_id):
     """

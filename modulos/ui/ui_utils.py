@@ -5,7 +5,8 @@ Funciones de utilidad para las interfaces de usuario (UI).
 Se usan para evitar duplicación de código en los distintos menús.
 """
 
-def obtener_input(mensaje, tipo=str, obligatorio=True):
+
+def obtener_input(mensaje: str, tipo: type = str, obligatorio: bool = True):
     """
     Pide un input al usuario con validación de tipo y obligatoriedad.
     - mensaje: texto a mostrar al pedir el input
