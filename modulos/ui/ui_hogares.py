@@ -61,4 +61,5 @@ def menu_principal_hogares():
         elif opcion == "2":
             listar_hogares()
         elif opcion == "0":
-            print("Saliendo del menú de
+            print("Saliendo del menú de hogares...")
+            break
