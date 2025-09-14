@@ -1,39 +1,13 @@
 # repositorio_usuarios.py
-
 # Base de datos en memoria (puede cambiarse a BD real en el futuro)
 
 from typing import Optional
+from servicios.servicios_usuarios import registrar_usuario as ra
 
-_usuarios = {
-    "admin": {
-        "contraseña": "adminpass",
-        "rol": "administrador",
-        "id_hogar": None,
-        "edad": None,
-        "mail": None,
-        "telefono": None,
-        "tiempo_de_conexion": 0,
-        "registro_actividad": []
-    }
-}
-
+# Eliminar bloque fuera de función, la creación de usuario debe estar dentro de crear_usuario()
 # Roles válidos en el sistema
-ROLES_VALIDOS = {"administrador", "estandar"}
-
-
-def obtener_usuario(nombre: str) -> dict | None:
-    """
-    Devuelve el diccionario de datos de un usuario por su nombre,
-    o None si no existe.
-
-    Args:
-        nombre (str): El nombre del usuario.
-
-    Returns:
-        dict | None: El diccionario de datos del usuario o None si no se encuentra.
-    """
-    return _usuarios.get(nombre)
-
+ROLES_VALIDOS = ("administrador", "estandar")
+_usuarios = {}
 
 def existe_usuario(nombre: str) -> bool:
     """
@@ -47,10 +21,9 @@ def existe_usuario(nombre: str) -> bool:
     """
     return nombre in _usuarios
 
-
 def crear_usuario(
     nombre: str,
-    contraseña: str,
+    contrasenia: str,
     rol: str = "estandar",
     id_hogar=None,
     edad=None,
@@ -58,7 +31,7 @@ def crear_usuario(
     telefono=None,
     tiempo_de_conexion: int = 0,
     registro_actividad: Optional[list] = None
-) -> None:
+):
     """
     Crea un nuevo usuario con los campos indicados.
 
@@ -81,8 +54,8 @@ def crear_usuario(
     if registro_actividad is None:
         registro_actividad = []
 
-    _usuarios[nombre] = {
-        "contraseña": contraseña,
+    usuario = {
+        "contrasenia": contrasenia,
         "rol": rol,
         "id_hogar": id_hogar,
         "edad": edad,
@@ -91,6 +64,22 @@ def crear_usuario(
         "tiempo_de_conexion": tiempo_de_conexion,
         "registro_actividad": registro_actividad
     }
+    _usuarios[nombre] = usuario
+    return usuario
+
+
+def obtener_usuario(nombre: str) -> dict | None:
+    """
+    Devuelve el diccionario de datos de un usuario por su nombre,
+    o None si no existe.
+
+    Args:
+        nombre (str): El nombre del usuario.
+
+    Returns:
+        dict | None: El diccionario de datos del usuario o None si no se encuentra.
+    """
+    return _usuarios.get(nombre)
 
 
 def actualizar_rol(nombre: str, nuevo_rol: str) -> None:
