@@ -22,8 +22,9 @@ Inicia la aplicación mostrando el menú global, que permite:
 
 - Salir del sistema
 """
-
-from modulos.ui.ui_usuarios import menu_principal_usuarios, iniciar_sesion
+from modulos.ui.ui_usuarios_estandar import iniciar_sesion
+from modulos.ui.ui_usuarios_estandar import menu_estandar
+from modulos.ui.ui_usuarios_administrador import menu_administrador
 from modulos.ui.ui_dispositivos import menu_principal_dispositivos
 from modulos.ui.ui_hogares import menu_principal_hogares
 from modulos.ui.ui_dispositivos_control import menu_principal_dispositivos_control
@@ -31,39 +32,46 @@ from modulos.datos.datos_dispositivos import dispositivos
 
 
 def menu_global():
-    # Primero pedimos login
+    # Login inicial
     usuario_actual = iniciar_sesion()
-    if not usuario_actual:
+    if usuario_actual["usuario"] is None:
         print("No se pudo iniciar sesión. Cerrando sistema...")
         return
 
-    rol = usuario_actual.get("rol", "estandar")  # por defecto estándar
+    nombre_usuario = usuario_actual["usuario"]
+    rol = usuario_actual.get("rol", "estandar")
 
     while True:
         print("\n--- Menú Global ---")
         print("1. Gestión de usuarios")
         print("2. Gestión de dispositivos")
 
-        # Solo admin puede ver hogares y dispositivos de control
         if rol == "administrador":
             print("3. Gestión de hogares")
             print("4. Gestión de dispositivos de control")
 
         print("0. Salir")
-
         opcion = input("Elige una opción: ").strip()
 
         if opcion == "1":
-            menu_principal_usuarios()
+            if rol == "administrador":
+                menu_administrador(nombre_usuario)
+            else:
+                menu_estandar(nombre_usuario)
+
         elif opcion == "2":
             menu_principal_dispositivos(dispositivos)
+
         elif opcion == "3" and rol == "administrador":
             menu_principal_hogares()
+
         elif opcion == "4" and rol == "administrador":
             menu_principal_dispositivos_control()
+
         elif opcion == "0":
             print("Saliendo del sistema...")
             break
+
         else:
             print("Opción no válida o sin permisos.")
 

@@ -1,8 +1,7 @@
-# modulos/ui/ui_usuarios.py
+# ui_usuarios_estandar.py
 
-from modulos.servicios import servicios_usuarios as su
+from modulos.servicios import servicios_usuarios_estandar as su
 from modulos.datos.datos_dispositivos import dispositivos
-from modulos.ui.ui_dispositivos import menu_principal_dispositivos
 from modulos.ui.ui_utils import obtener_input, pausar_pantalla
 
 
@@ -18,7 +17,7 @@ def registrar_usuario():
     telefono = obtener_input("Teléfono: ")
 
     if su.registrar_usuario(nombre, contraseña, id_hogar, edad, mail, telefono):
-        print(f"¡Usuario '{nombre}' registrado con éxito!")
+        print(f"¡Usuario '{nombre}' registrado con éxito! ")
     else:
         print("Ese usuario ya existe o el hogar no existe.")
     pausar_pantalla()
@@ -69,7 +68,7 @@ def menu_estandar(nombre_usuario):
             pausar_pantalla()
 
         elif opcion == '2':
-            print("\n--- Automatización ---\n¡Automatización predefinida activada!")
+            print("\n--- Automatización ---\n¡Automatización predefinida activada! ")
             pausar_pantalla()
 
         elif opcion == '3':
@@ -89,61 +88,17 @@ def menu_estandar(nombre_usuario):
             pausar_pantalla()
 
         elif opcion == '0':
-            print(f"Cerrando sesión de {nombre_usuario}.")
+            print(f"Cerrando sesión de {nombre_usuario}. ")
             break
         else:
             print("Opción no válida. Inténtalo de nuevo.")
 
 
-def menu_administrador(nombre_usuario):
-    """Muestra opciones para usuarios administradores."""
-    while True:
-        print(f"\n--- Menú Administrador ({nombre_usuario}) ---")
-        print("""
-        1. Consultar automatizaciones activas
-        2. Gestionar dispositivos
-        3. Modificar rol de un usuario
-        0. Cerrar sesión
-        """)
-        opcion = obtener_input("Elige una opción: ")
-
-        if opcion == '1':
-            print(
-                "\n--- Automatizaciones Activas ---\nMostrando automatizaciones en curso.")
-            pausar_pantalla()
-
-        elif opcion == '2':
-            menu_principal_dispositivos(
-                dispositivos, volver_a=menu_administrador)
-
-        elif opcion == '3':
-            usuario_a_modificar = obtener_input(
-                "Usuario para cambiar su rol: ")
-            if usuario_a_modificar is not None:
-                usuario_a_modificar = usuario_a_modificar.lower()
-            nuevo_rol = obtener_input(
-                "Nuevo rol (estándar/administrador): ")
-            if nuevo_rol is not None:
-                nuevo_rol = nuevo_rol.lower()
-            if su.cambiar_rol(usuario_a_modificar, nuevo_rol):
-                print(
-                    f"¡Rol de '{usuario_a_modificar}' cambiado a '{nuevo_rol}'!")
-            else:
-                print("Usuario no encontrado o rol inválido.")
-            pausar_pantalla()
-
-        elif opcion == '0':
-            print(f"Cerrando sesión de {nombre_usuario}.")
-            break
-        else:
-            print("Opción no válida. Inténtalo de nuevo.")
-
-
-def menu_principal_usuarios():
-    """El menú principal de gestión de usuarios."""
+def menu_principal_usuarios_estandar():
+    """El menú principal de gestión de usuarios estándar."""
     while True:
         print("""
-        --- Menú de Usuarios ---
+        --- Menú de Usuarios Estándar ---
         1. Registrar nuevo usuario
         2. Iniciar sesión
         0. Volver al menú global
@@ -153,14 +108,9 @@ def menu_principal_usuarios():
         if opcion == '1':
             registrar_usuario()
         elif opcion == '2':
-            usuario_actual, rol_actual = iniciar_sesion()
-            if usuario_actual:
-                if rol_actual == "estandar":
-                    menu_estandar(usuario_actual)
-                elif rol_actual == "administrador":
-                    menu_administrador(usuario_actual)
+            return iniciar_sesion()
         elif opcion == '0':
-            print("Saliendo del menú de usuarios.")
+            print("Saliendo del menú de usuarios estándar.")
             break
         else:
             print("Opción no válida. Por favor, elige 1, 2 o 0.")
