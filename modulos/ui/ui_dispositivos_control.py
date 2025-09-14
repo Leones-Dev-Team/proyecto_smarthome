@@ -2,9 +2,12 @@
 
 import re
 from modulos.ui.ui_utils import obtener_input, pausar_pantalla
-
-# Nota: esta lista se eliminará cuando Jonny cree repositorio_dispositivos_control.
-dispositivos_control = []
+from repositorio_dispositivos_control import (
+    crear_control,
+    obtener_control,
+    listar_controles,
+    existe_control
+)
 
 
 def validar_hora(hora):
@@ -13,19 +16,17 @@ def validar_hora(hora):
 
 
 def agregar_dispositivo_control():
-    """Agrega un nuevo dispositivo de control."""
+    """Agrega un nuevo dispositivo de control usando el repositorio."""
     print("\n--- Agregar Dispositivo de Control ---")
     nuevo_id = obtener_input("ID del dispositivo de control: ")
 
     # Validar ID único
-    for d in dispositivos_control:
-        if d["id_dispositivo_control"] == nuevo_id:
-            print("Ya existe un dispositivo con ese ID. Intenta con otro.")
-            pausar_pantalla()
-            return
+    if existe_control(nuevo_id):
+        print("Ya existe un dispositivo con ese ID. Intenta con otro.")
+        pausar_pantalla()
+        return
 
-    tipo = obtener_input(
-        "Tipo de dispositivo de control (ej: sensor, termostato, hub): ")
+    tipo = obtener_input("Tipo de dispositivo de control (ej: sensor, termostato, hub): ")
     ubicacion = obtener_input("Ubicación: ")
     id_usuario_conectado = obtener_input("ID del usuario conectado: ")
     hora_conexion = obtener_input("Hora de conexión (HH:MM): ")
@@ -41,29 +42,31 @@ def agregar_dispositivo_control():
         pausar_pantalla()
         return
 
-    nuevo = {
-        "id_dispositivo_control": nuevo_id,
-        "tipo_dispositivo_control": tipo,
-        "ubicacion": ubicacion,
-        "id_usuario_conectado": id_usuario_conectado,
-        "hora_conexion": hora_conexion
-    }
-    dispositivos_control.append(nuevo)
+    # Crear registro en el repositorio
+    crear_control(
+        id_control=nuevo_id,
+        id_usuario_conectado=id_usuario_conectado,
+        hora_de_conexion=hora_conexion
+    )
+
     print("Dispositivo de control agregado con éxito.")
     pausar_pantalla()
 
 
 def listar_dispositivos_control():
-    """Lista todos los dispositivos de control registrados."""
+    """Lista todos los dispositivos de control registrados en el repositorio."""
     print("\n--- Lista de Dispositivos de Control ---")
-    if not dispositivos_control:
+    controles = listar_controles()
+    if not controles:
         print("No hay dispositivos de control registrados.")
     else:
-        for d in dispositivos_control:
+        for id_control, datos in controles.items():
             print(
-                f"ID: {d['id_dispositivo_control']}, Tipo: {d['tipo_dispositivo_control']}, "
-                f"Ubicación: {d['ubicacion']}, Usuario: {d['id_usuario_conectado']}, "
-                f"Hora conexión: {d['hora_conexion']}"
+                f"ID: {id_control}, Usuario: {datos['id_usuario_conectado']}, "
+                f"Hora conexión: {datos['hora_de_conexion']}, "
+                f"Activos: {len(datos['dispositivos_activos'])}, "
+                f"Apagados: {len(datos['dispositivos_apagados'])}, "
+                f"Ahorro energía: {len(datos['dispositivos_en_ahorro_de_energia'])}"
             )
     pausar_pantalla()
 
