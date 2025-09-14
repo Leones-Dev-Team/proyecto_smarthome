@@ -2,7 +2,8 @@
 
 # Base de datos en memoria (puede cambiarse a BD real en el futuro)
 
-#12/09/2025 correcciones por jonathan ordoñez
+from typing import Optional
+
 _usuarios = {
     "admin": {
         "contraseña": "adminpass",
@@ -56,7 +57,7 @@ def crear_usuario(
     mail=None,
     telefono=None,
     tiempo_de_conexion: int = 0,
-    registro_actividad: list = None
+    registro_actividad: Optional[list] = None
 ) -> None:
     """
     Crea un nuevo usuario con los campos indicados.
@@ -72,13 +73,14 @@ def crear_usuario(
 
     if existe_usuario(nombre):
         raise ValueError(f"El usuario '{nombre}' ya existe.")
-    
+
     if rol not in ROLES_VALIDOS:
-        raise ValueError(f"El rol '{rol}' no es válido. Los roles permitidos son: {ROLES_VALIDOS}")
+        raise ValueError(
+            f"El rol '{rol}' no es válido. Los roles permitidos son: {ROLES_VALIDOS}")
 
     if registro_actividad is None:
         registro_actividad = []
-        
+
     _usuarios[nombre] = {
         "contraseña": contraseña,
         "rol": rol,
@@ -103,8 +105,9 @@ def actualizar_rol(nombre: str, nuevo_rol: str) -> None:
         raise ValueError(f"El usuario '{nombre}' no existe.")
 
     if nuevo_rol not in ROLES_VALIDOS:
-        raise ValueError(f"El rol '{nuevo_rol}' no es válido. Los roles permitidos son: {ROLES_VALIDOS}")
-    
+        raise ValueError(
+            f"El rol '{nuevo_rol}' no es válido. Los roles permitidos son: {ROLES_VALIDOS}")
+
     _usuarios[nombre]["rol"] = nuevo_rol
 
 

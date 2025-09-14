@@ -2,6 +2,7 @@
 
 _dispositivos_control = {}
 
+
 def crear_control(
     id_control,
     id_usuario_conectado=None,
@@ -33,11 +34,14 @@ def crear_control(
         "otros": otros
     }
 
+
 def obtener_control(id_control):
     return _dispositivos_control.get(id_control)
 
+
 def listar_controles():
     return dict(_dispositivos_control)
+
 
 def existe_control(id_control):
     return id_control in _dispositivos_control

@@ -24,7 +24,8 @@ def agregar_dispositivo_control():
             pausar_pantalla()
             return
 
-    tipo = obtener_input("Tipo de dispositivo de control (ej: sensor, termostato, hub): ")
+    tipo = obtener_input(
+        "Tipo de dispositivo de control (ej: sensor, termostato, hub): ")
     ubicacion = obtener_input("Ubicación: ")
     id_usuario_conectado = obtener_input("ID del usuario conectado: ")
     hora_conexion = obtener_input("Hora de conexión (HH:MM): ")

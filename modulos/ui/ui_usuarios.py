@@ -5,6 +5,7 @@ from modulos.datos.datos_dispositivos import dispositivos
 from modulos.ui.ui_dispositivos import menu_principal_dispositivos
 from modulos.ui.ui_utils import obtener_input, pausar_pantalla
 
+
 def registrar_usuario():
     """Crea un nuevo usuario estándar."""
     print("\n--- Registrar Nuevo Usuario ---")
@@ -26,17 +27,19 @@ def registrar_usuario():
 def iniciar_sesion():
     """Permite entrar al sistema. Devuelve usuario y rol si es correcto."""
     print("\n--- Iniciar Sesión ---")
-    nombre = obtener_input("Usuario: ").lower()
+    nombre = obtener_input("Usuario: ")
+    if nombre is not None:
+        nombre = nombre.lower()
     contra = obtener_input("Contraseña: ")
 
     usuario, rol = su.iniciar_sesion(nombre, contra)
     if usuario:
         print(f"¡Bienvenido/a, {nombre}! (Rol: {rol})")
-        return usuario, rol
+        return {"usuario": usuario, "rol": rol}
     else:
         print("Usuario o contraseña incorrectos.")
         pausar_pantalla()
-        return None, None
+        return {"usuario": None, "rol": None}
 
 
 def menu_estandar(nombre_usuario):
@@ -78,10 +81,10 @@ def menu_estandar(nombre_usuario):
                     print(
                         f"ID: {d['id_dispositivo']}, Tipo: {d['tipo_dispositivo']}, Estado: {d['estado']}, "
                         f"Esencial: {'Sí' if d['es_esencial'] else 'No'}, "
-                        f"Usuario Conectado: {d.get('id_usuario_conectado','-')}, "
-                        f"Ubicación: {d.get('ubicacion','-')}, "
-                        f"Marca: {d.get('marca_dispositivo','-')}, "
-                        f"Consumo: {d.get('consumo_energetico','-')}W"
+                        f"Usuario Conectado: {d.get('id_usuario_conectado', '-')}, "
+                        f"Ubicación: {d.get('ubicacion', '-')}, "
+                        f"Marca: {d.get('marca_dispositivo', '-')}, "
+                        f"Consumo: {d.get('consumo_energetico', '-')}W"
                     )
             pausar_pantalla()
 
@@ -105,17 +108,26 @@ def menu_administrador(nombre_usuario):
         opcion = obtener_input("Elige una opción: ")
 
         if opcion == '1':
-            print("\n--- Automatizaciones Activas ---\nMostrando automatizaciones en curso.")
+            print(
+                "\n--- Automatizaciones Activas ---\nMostrando automatizaciones en curso.")
             pausar_pantalla()
 
         elif opcion == '2':
-            menu_principal_dispositivos(dispositivos, volver_a=menu_administrador)
+            menu_principal_dispositivos(
+                dispositivos, volver_a=menu_administrador)
 
         elif opcion == '3':
-            usuario_a_modificar = obtener_input("Usuario para cambiar su rol: ").lower()
-            nuevo_rol = obtener_input("Nuevo rol (estándar/administrador): ").lower()
+            usuario_a_modificar = obtener_input(
+                "Usuario para cambiar su rol: ")
+            if usuario_a_modificar is not None:
+                usuario_a_modificar = usuario_a_modificar.lower()
+            nuevo_rol = obtener_input(
+                "Nuevo rol (estándar/administrador): ")
+            if nuevo_rol is not None:
+                nuevo_rol = nuevo_rol.lower()
             if su.cambiar_rol(usuario_a_modificar, nuevo_rol):
-                print(f"¡Rol de '{usuario_a_modificar}' cambiado a '{nuevo_rol}'!")
+                print(
+                    f"¡Rol de '{usuario_a_modificar}' cambiado a '{nuevo_rol}'!")
             else:
                 print("Usuario no encontrado o rol inválido.")
             pausar_pantalla()

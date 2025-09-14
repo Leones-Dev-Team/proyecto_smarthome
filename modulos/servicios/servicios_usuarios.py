@@ -4,6 +4,8 @@ import logging
 from modulos.repositorio.repositorio_usuarios import crear_usuario
 from modulos.servicios.servicios_hogares import buscar_hogar_por_id
 
+
+# Falta reemplazar "apellido" por "contraseña" y agregar "telefono" y "edad" en los parámetros
 def registrar_usuario(nombre, apellido, id_hogar, correo_electronico):
     """Registra un nuevo usuario con la validación de id_hogar."""
 

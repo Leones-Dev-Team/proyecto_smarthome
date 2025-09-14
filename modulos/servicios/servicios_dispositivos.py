@@ -7,6 +7,7 @@ from .servicios_historial import agregar_evento_historial
 # Simulación de una base de datos en memoria para los dispositivos.
 _dispositivos = []
 
+
 def agregar_dispositivo(id_usuario_conectado: str, nombre: str, tipo: str, estado: bool):
     """
     Agrega un nuevo dispositivo y lo asocia a un usuario existente.
@@ -19,8 +20,8 @@ def agregar_dispositivo(id_usuario_conectado: str, nombre: str, tipo: str, estad
 
     Returns:
         tuple: Un diccionario con los datos del nuevo dispositivo y un código de estado (201).
-               En caso de error, retorna un diccionario con un mensaje de error y un
-               código de estado (400 o 404).
+            En caso de error, retorna un diccionario con un mensaje de error y un
+            código de estado (400 o 404).
     """
     # 1. Validaciones de tipo de dato
     if not isinstance(id_usuario_conectado, str) or not isinstance(nombre, str) or not isinstance(tipo, str) or not isinstance(estado, bool):
@@ -39,18 +40,19 @@ def agregar_dispositivo(id_usuario_conectado: str, nombre: str, tipo: str, estad
         "tipo": tipo,
         "estado": estado
     }
-    
+
     _dispositivos.append(nuevo_dispositivo)
     print(f"Dispositivo agregado: {nuevo_dispositivo}")
 
     # Registrar el evento en el historial.
     agregar_evento_historial(
-        id_usuario_conectado, 
-        "dispositivo", 
+        id_usuario_conectado,
+        "dispositivo",
         f"Se agregó un nuevo dispositivo: {nombre} ({tipo})."
     )
 
     return nuevo_dispositivo, 201
+
 
 def listar_dispositivos():
     """
@@ -60,6 +62,7 @@ def listar_dispositivos():
         list: Una lista de diccionarios, donde cada diccionario representa un dispositivo.
     """
     return _dispositivos
+
 
 def buscar_dispositivo_por_id(id_dispositivo: str):
     """
