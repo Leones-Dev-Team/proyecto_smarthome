@@ -1,6 +1,6 @@
 # modulos/servicios/servicios_dispositivos_control.py
 import uuid
-from servicios.servicios_hogares import buscar_hogar_por_id
+from modulos.servicios.servicios_hogares import buscar_hogar_por_id
 
 # Simulación de una base de datos en memoria
 _dispositivos_control = []
@@ -13,8 +13,8 @@ def crear_dispositivo_control(id_hogar: str, nombre: str, tipo: str, estado: boo
     Args:
         id_hogar (str): El ID del hogar al que pertenece el dispositivo de control.
         nombre (str): El nombre del dispositivo.
-        tipo (str): El tipo de dispositivo (ej. "altavoz", "termostato").
-        estado (bool): El estado inicial del dispositivo (ej. True para encendido).
+        tipo (str): El tipo de dispositivo (ej. "sensor", "termostato", "hub").
+        estado (bool): El estado inicial del dispositivo (True para encendido, False para apagado).
 
     Returns:
         tuple: Un diccionario con los datos del nuevo dispositivo y un código de estado (201).
@@ -48,7 +48,7 @@ def listar_dispositivos_control():
     Returns:
         list: Una lista de diccionarios, donde cada diccionario representa un dispositivo.
     """
-    return _dispositivos_control
+    return list(_dispositivos_control)  # Devuelve una copia para evitar modificaciones externas
 
 
 def buscar_dispositivo_control_por_id(id_dispositivo: str):
@@ -65,3 +65,37 @@ def buscar_dispositivo_control_por_id(id_dispositivo: str):
         if dispositivo.get("id_dispositivo_control") == id_dispositivo:
             return dispositivo
     return None
+
+
+def obtener_estado_dispositivo(id_dispositivo: str):
+    """
+    Obtiene el estado (encendido/apagado) de un dispositivo de control por su ID.
+
+    Args:
+        id_dispositivo (str): El ID del dispositivo de control.
+
+    Returns:
+        tuple: Estado del dispositivo (True/False) y código de estado (200/404).
+    """
+    dispositivo = buscar_dispositivo_control_por_id(id_dispositivo)
+    if dispositivo:
+        return dispositivo["estado"], 200
+    return {"error": "Dispositivo no encontrado."}, 404
+
+
+def actualizar_estado_dispositivo(id_dispositivo: str, nuevo_estado: bool):
+    """
+    Actualiza el estado de un dispositivo de control.
+
+    Args:
+        id_dispositivo (str): El ID del dispositivo de control.
+        nuevo_estado (bool): El nuevo estado (True/False).
+
+    Returns:
+        tuple: Diccionario actualizado y código de estado (200/404).
+    """
+    dispositivo = buscar_dispositivo_control_por_id(id_dispositivo)
+    if dispositivo:
+        dispositivo["estado"] = nuevo_estado
+        return dispositivo, 200
+    return {"error": "Dispositivo no encontrado."}, 404

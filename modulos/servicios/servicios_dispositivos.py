@@ -1,80 +1,100 @@
 # Módulo de servicios para la gestión de dispositivos.
 # Este archivo contiene las funciones que permiten agregar, listar y buscar dispositivos.
 import uuid
-from .servicios_usuarios import buscar_usuario_por_id
-from .servicios_historial import agregar_evento_historial
+from typing import Dict, Any
 
 # Simulación de una base de datos en memoria para los dispositivos.
-_dispositivos = []
+_dispositivos = {}
 
-
-def agregar_dispositivo(id_usuario_conectado: str, nombre: str, tipo: str, estado: bool):
+def agregar_dispositivo(dispositivos: Dict[str, dict], nuevo: dict) -> bool:
     """
-    Agrega un nuevo dispositivo y lo asocia a un usuario existente.
+    Agrega un nuevo dispositivo al diccionario si el ID no existe.
 
     Args:
-        id_usuario_conectado (str): El ID del usuario al que se asocia el dispositivo.
-        nombre (str): El nombre del dispositivo.
-        tipo (str): El tipo de dispositivo (ej. "luz", "puerta").
-        estado (bool): El estado inicial del dispositivo (ej. True para encendido).
+        dispositivos (dict): Diccionario de dispositivos.
+        nuevo (dict): Diccionario con los datos del nuevo dispositivo.
 
     Returns:
-        tuple: Un diccionario con los datos del nuevo dispositivo y un código de estado (201).
-            En caso de error, retorna un diccionario con un mensaje de error y un
-            código de estado (400 o 404).
+        bool: True si se agregó, False si el ID ya existe.
     """
-    # 1. Validaciones de tipo de dato
-    if not isinstance(id_usuario_conectado, str) or not isinstance(nombre, str) or not isinstance(tipo, str) or not isinstance(estado, bool):
-        return {"error": "Tipos de datos incorrectos."}, 400
+    id_disp = nuevo.get('id_dispositivo')
+    if not id_disp or id_disp in dispositivos:
+        return False
+    # Generar un UUID si el ID no es válido (opcional)
+    # id_disp = id_disp or str(uuid.uuid4())
+    dispositivos[id_disp] = nuevo
+    _dispositivos[id_disp] = nuevo
+    return True
 
-    # 2. Validar que el id_usuario_conectado exista
-    usuario_existente = buscar_usuario_por_id(id_usuario_conectado)
-    if not usuario_existente:
-        return {"error": "El 'id_usuario_conectado' no existe."}, 404
-
-    # Generar ID único para el dispositivo
-    nuevo_dispositivo = {
-        "id_dispositivo": str(uuid.uuid4()),
-        "id_usuario_conectado": id_usuario_conectado,
-        "nombre": nombre,
-        "tipo": tipo,
-        "estado": estado
-    }
-
-    _dispositivos.append(nuevo_dispositivo)
-    print(f"Dispositivo agregado: {nuevo_dispositivo}")
-
-    # Registrar el evento en el historial.
-    agregar_evento_historial(
-        id_usuario_conectado,
-        "dispositivo",
-        f"Se agregó un nuevo dispositivo: {nombre} ({tipo})."
-    )
-
-    return nuevo_dispositivo, 201
-
-
-def listar_dispositivos():
+def listar_dispositivos() -> Dict[str, dict]:
     """
-    Retorna una lista de todos los dispositivos registrados.
+    Devuelve todos los dispositivos registrados.
 
     Returns:
-        list: Una lista de diccionarios, donde cada diccionario representa un dispositivo.
+        dict: Diccionario de dispositivos, clave es el id_dispositivo.
     """
-    return _dispositivos
+    return dict(_dispositivos)
 
-
-def buscar_dispositivo_por_id(id_dispositivo: str):
+def eliminar_dispositivo(dispositivos: Dict[str, dict], id_dispositivo: str) -> bool:
     """
-    Busca un dispositivo por su ID único.
+    Elimina un dispositivo por su ID.
 
     Args:
-        id_dispositivo (str): El ID del dispositivo a buscar.
+        dispositivos (dict): Diccionario de dispositivos.
+        id_dispositivo (str): ID del dispositivo a eliminar.
 
     Returns:
-        dict or None: El diccionario del dispositivo si se encuentra, de lo contrario None.
+        bool: True si se eliminó, False si no se encontró.
     """
-    for dispositivo in _dispositivos:
-        if dispositivo.get("id_dispositivo") == id_dispositivo:
-            return dispositivo
-    return None
+    if id_dispositivo in dispositivos:
+        dispositivos.pop(id_dispositivo)
+        _dispositivos.pop(id_dispositivo, None)
+        return True
+    return False
+
+def buscar_dispositivo(dispositivos: Dict[str, dict], id_dispositivo: str) -> dict:
+    """
+    Busca un dispositivo por su ID.
+
+    Args:
+        dispositivos (dict): Diccionario de dispositivos.
+        id_dispositivo (str): ID del dispositivo a buscar.
+
+    Returns:
+        dict or None: Diccionario del dispositivo si existe, None si no.
+    """
+    return dispositivos.get(id_dispositivo)
+
+def actualizar_estado_dispositivo(id_dispositivo: str, nuevo_estado: str) -> bool:
+    """
+    Actualiza el estado de un dispositivo.
+
+    Args:
+        id_dispositivo (str): ID del dispositivo.
+        nuevo_estado (str): 'encendido' o 'apagado'.
+
+    Returns:
+        bool: True si se actualizó, False si no existe o estado inválido.
+    """
+    dispositivo = _dispositivos.get(id_dispositivo)
+    if dispositivo and nuevo_estado in ['encendido', 'apagado']:
+        dispositivo['estado'] = nuevo_estado
+        return True
+    return False
+
+def activar_modo_ahorro(dispositivos: Dict[str, dict]) -> int:
+    """
+    Apaga todos los dispositivos no esenciales.
+
+    Args:
+        dispositivos (dict): Diccionario de dispositivos.
+
+    Returns:
+        int: Número de dispositivos apagados.
+    """
+    apagados = 0
+    for d in dispositivos.values():
+        if not d.get('es_esencial', False) and d.get('estado') == 'encendido':
+            d['estado'] = 'apagado'
+            apagados += 1
+    return apagados
