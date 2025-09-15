@@ -1,5 +1,4 @@
 # ui_dispositivos_control.py
-
 from modulos.ui.ui_utils import obtener_input, pausar_pantalla
 from modulos.servicios import servicios_dispositivos_control as sdc
 
@@ -8,11 +7,12 @@ def agregar_dispositivo_control():
     """Agrega un nuevo dispositivo de control usando el servicio."""
     print("\n--- Agregar Dispositivo de Control ---")
 
-    id_hogar = obtener_input("ID del hogar al que pertenece: ")
-    nombre = obtener_input("Nombre del dispositivo: ")
-    tipo = obtener_input("Tipo de dispositivo (ej: sensor, termostato, hub): ")
-    estado_input = obtener_input("Estado (encendido/apagado): ")
-    estado = True if estado_input.lower() == "encendido" else False
+    id_hogar = (obtener_input("ID del hogar al que pertenece: ") or "").strip()
+    nombre = (obtener_input("Nombre del dispositivo: ") or "").strip()
+    tipo = (obtener_input(
+        "Tipo de dispositivo (ej: sensor, termostato, hub): ") or "").strip()
+    estado = (obtener_input("Estado (encendido/apagado): ")
+              or "").lower().strip()
 
     resultado, status = sdc.crear_dispositivo_control(
         id_hogar=id_hogar,
@@ -24,7 +24,8 @@ def agregar_dispositivo_control():
     if status == 201:
         print(f"Dispositivo agregado con éxito: {resultado}")
     else:
-        print(f"Error al agregar dispositivo: {resultado.get('error', 'desconocido')}")
+        print(
+            f"Error al agregar dispositivo: {resultado.get('error', 'desconocido')}")
     pausar_pantalla()
 
 
@@ -35,30 +36,31 @@ def listar_dispositivos_control():
     if not controles:
         print("No hay dispositivos de control registrados.")
     else:
-        for d in controles:
-            estado_str = "encendido" if d["estado"] else "apagado"
+        for c in controles.values():
+            otros = c.get("otros", {})
             print(
-                f"ID: {d['id_dispositivo_control']}, "
-                f"Hogar: {d['id_hogar']}, "
-                f"Nombre: {d['nombre']}, "
-                f"Tipo: {d['tipo']}, "
-                f"Estado: {estado_str}"
+                f"ID: {c.get('id_control', '-')}, "
+                f"Hogar: {otros.get('id_hogar', '-')}, "
+                f"Nombre: {otros.get('nombre', '-')}, "
+                f"Tipo: {otros.get('tipo', '-')}, "
+                f"Estado: {otros.get('estado', '-')}"
             )
     pausar_pantalla()
 
 
 def buscar_dispositivo_control():
     """Busca un dispositivo de control por ID."""
-    id_dispositivo = obtener_input("ID del dispositivo a buscar: ")
+    id_dispositivo = (obtener_input(
+        "ID del dispositivo a buscar: ") or "").strip()
     dispositivo = sdc.buscar_dispositivo_control_por_id(id_dispositivo)
     if dispositivo:
-        estado_str = "encendido" if dispositivo["estado"] else "apagado"
+        otros = dispositivo.get("otros", {})
         print(
-            f"ID: {dispositivo['id_dispositivo_control']}, "
-            f"Hogar: {dispositivo['id_hogar']}, "
-            f"Nombre: {dispositivo['nombre']}, "
-            f"Tipo: {dispositivo['tipo']}, "
-            f"Estado: {estado_str}"
+            f"ID: {dispositivo.get('id_control', '-')}, "
+            f"Hogar: {otros.get('id_hogar', '-')}, "
+            f"Nombre: {otros.get('nombre', '-')}, "
+            f"Tipo: {otros.get('tipo', '-')}, "
+            f"Estado: {otros.get('estado', '-')}"
         )
     else:
         print("No se encontró el dispositivo.")
@@ -75,7 +77,7 @@ def menu_principal_dispositivos_control():
         3. Buscar dispositivo de control
         0. Volver al menú anterior
         """)
-        opcion = obtener_input("Elige una opción: ")
+        opcion = (obtener_input("Elige una opción: ") or "").strip()
 
         if opcion == "1":
             agregar_dispositivo_control()

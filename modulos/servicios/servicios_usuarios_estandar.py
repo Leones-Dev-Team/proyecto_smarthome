@@ -1,75 +1,91 @@
-# Servicios para gestión de usuarios estándar
-from typing import Dict, Tuple, Optional
-from modulos.servicios.servicios_hogares import existe_hogar
+# servicios_usuarios_estandar.py
+from typing import Optional, Tuple
+from datetime import datetime
+from modulos.repositorios import repositorio_usuarios as ru
+from modulos.repositorios import repositorio_hogares as rh
 
-# Simulación de base de datos en memoria
-_usuarios_estandar: Dict[str, dict] = {}
 
-def registrar_usuario(nombre: str, contraseña: str, id_hogar: str, edad: int, mail: str, telefono: str) -> bool:
+def registrar_usuario(
+    nombre: str,
+    contrasena: str,
+    id_hogar: str,
+    edad: int,
+    mail: Optional[str] = None,
+    telefono: Optional[str] = None
+) -> bool:
     """
-    Registra un nuevo usuario estándar si el nombre no existe y el hogar es válido.
-
-    Args:
-        nombre (str): Nombre de usuario.
-        contraseña (str): Contraseña del usuario.
-        id_hogar (str): ID del hogar asociado.
-        edad (int): Edad del usuario.
-        mail (str): Correo electrónico.
-        telefono (str): Teléfono.
-
-    Returns:
-        bool: True si se registró, False si ya existe o el hogar no existe.
+    Registra un nuevo usuario estandar si el nombre no existe y el hogar es valido.
     """
-    nombre = nombre.lower()
-    if nombre in _usuarios_estandar or not existe_hogar(id_hogar):
+    if not isinstance(nombre, str) or not nombre.strip():
         return False
-    _usuarios_estandar[nombre] = {
-        "nombre": nombre,
-        "contraseña": contraseña,
-        "id_hogar": id_hogar,
-        "edad": edad,
-        "mail": mail,
-        "telefono": telefono,
-        "rol": "estandar"
-    }
+    if not isinstance(contrasena, str) or not contrasena.strip():
+        return False
+    if not isinstance(id_hogar, str) or not id_hogar.strip():
+        return False
+    try:
+        edad = int(edad)
+        if edad < 0:
+            return False
+    except (ValueError, TypeError):
+        return False
+    if mail is not None and (not isinstance(mail, str) or not mail.strip()):
+        return False
+    if telefono is not None and (not isinstance(telefono, str) or not telefono.strip()):
+        return False
+
+    nombre = nombre.lower()
+
+    if ru.existe_usuario(nombre):
+        return False
+
+    if not rh.existe_hogar(id_hogar):
+        return False
+
+    ahora = datetime.now().isoformat()
+    ru.crear_usuario(
+        nombre=nombre,
+        contrasena=contrasena,
+        rol="estandar",
+        id_hogar=id_hogar,
+        edad=edad,
+        mail=mail,
+        telefono=telefono,
+        tiempo_de_conexion=0,
+        registro_actividad=[{
+            "accion": "crear_usuario_estandar",
+            "fecha": ahora
+        }]
+    )
     return True
 
-def iniciar_sesion(nombre: str, contraseña: str) -> Tuple[Optional[dict], Optional[str]]:
+
+def iniciar_sesion(nombre: str, contrasena: str) -> Tuple[Optional[dict], Optional[str]]:
     """
-    Verifica usuario y contraseña. Devuelve usuario y rol si es correcto.
-
-    Args:
-        nombre (str): Nombre de usuario.
-        contraseña (str): Contraseña.
-
-    Returns:
-        tuple: (usuario dict, rol str) si es correcto, (None, None) si no.
+    Verifica usuario y contrasena. Devuelve usuario y rol si es correcto.
     """
     if nombre is not None:
         nombre = nombre.lower()
-    usuario = _usuarios_estandar.get(nombre)
-    if usuario and usuario["contraseña"] == contraseña:
-        return usuario, usuario["rol"]
+
+    usuario = ru.obtener_usuario(nombre)
+    if usuario and usuario.get("contrasena") == contrasena:
+        return usuario, usuario.get("rol")
     return None, None
+
 
 def obtener_info_usuario(nombre: str) -> Optional[dict]:
     """
-    Devuelve la información del usuario estándar.
-
-    Args:
-        nombre (str): Nombre de usuario.
-
-    Returns:
-        dict: Datos del usuario, o None si no existe.
+    Devuelve la informacion del usuario estandar.
     """
     nombre = nombre.lower()
-    return _usuarios_estandar.get(nombre)
+    return ru.obtener_usuario(nombre)
 
-def listar_usuarios_estandar() -> Dict[str, dict]:
-    """
-    Devuelve todos los usuarios estándar registrados.
 
-    Returns:
-        dict: Diccionario de usuarios, clave es el nombre de usuario.
+def listar_usuarios_estandar() -> dict:
     """
-    return dict(_usuarios_estandar)
+    Devuelve todos los usuarios estandar registrados.
+    """
+    return {
+        nombre: datos
+        for nombre, datos in ru.listar_usuarios().items()
+        if datos.get("rol") == "estandar"
+    }

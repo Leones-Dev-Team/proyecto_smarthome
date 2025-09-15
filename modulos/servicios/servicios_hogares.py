@@ -1,72 +1,52 @@
-# modulos/servicios/servicios_hogares.py
-import uuid
-from typing import Dict
-
-# Simulación de una base de datos en memoria (diccionario)
-_hogares = {}
+# servicios_hogares.py
+from typing import Tuple, Optional
+from datetime import datetime
+from modulos.repositorios import repositorio_hogares as rh
 
 
-def crear_hogar(id_hogar: str, ubicacion: str, tipo_de_vivienda: str) -> tuple:
+def crear_hogar(id_hogar: str, ubicacion: str, tipo_de_vivienda: str) -> Tuple[dict, int]:
     """
-    Crea un nuevo hogar y lo agrega al diccionario de hogares.
-
-    Args:
-        id_hogar (str): El ID único del hogar.
-        ubicacion (str): La ubicación física del hogar.
-        tipo_de_vivienda (str): El tipo de vivienda (casa, departamento, etc.).
-
-    Returns:
-        tuple: Un diccionario con los datos del nuevo hogar y un código de estado (201).
-            En caso de error, retorna un diccionario con un mensaje de error y un
-            código de estado (400 o 409).
+    Crea un nuevo hogar validando datos y evitando duplicados.
+    Devuelve (resultado, status_code).
     """
-    if not isinstance(id_hogar, str) or not isinstance(ubicacion, str) or not isinstance(tipo_de_vivienda, str):
-        return {"error": "Tipos de datos incorrectos."}, 400
+    if not all(isinstance(v, str) and v.strip() for v in (id_hogar, ubicacion, tipo_de_vivienda)):
+        return {"error": "Datos invalidos o vacios."}, 400
 
-    if id_hogar in _hogares:
+    if rh.existe_hogar(id_hogar):
         return {"error": "Ya existe un hogar con ese ID."}, 409
 
-    nuevo_hogar = {
-        "id_hogar": id_hogar,
-        "ubicacion": ubicacion,
-        "tipo_de_vivienda": tipo_de_vivienda,
-        "tiempo_de_conexion": 0  # Valor inicial, puede actualizarse luego
-    }
-    _hogares[id_hogar] = nuevo_hogar
-    return nuevo_hogar, 201
+    try:
+        ahora = datetime.now().isoformat()
+        nuevo_hogar = rh.crear_hogar(
+            id_hogar=id_hogar,
+            ubicacion=ubicacion,
+            tipo_de_vivienda=tipo_de_vivienda,
+            tiempo_de_conexion=0,
+            registro_actividad=[{
+                "accion": "crear_hogar",
+                "fecha": ahora
+            }]
+        )
+        return nuevo_hogar, 201
+    except ValueError as e:
+        return {"error": str(e)}, 400
 
 
 def existe_hogar(id_hogar: str) -> bool:
-    """
-    Verifica si existe un hogar con el ID dado.
-
-    Args:
-        id_hogar (str): El ID del hogar a verificar.
-
-    Returns:
-        bool: True si existe, False si no.
-    """
-    return id_hogar in _hogares
+    """Verifica si existe un hogar con el ID dado."""
+    return rh.existe_hogar(id_hogar)
 
 
-def listar_hogares() -> Dict[str, dict]:
-    """
-    Retorna un diccionario de todos los hogares registrados.
-
-    Returns:
-        dict: Diccionario de hogares, clave es el id_hogar.
-    """
-    return dict(_hogares)
+def listar_hogares() -> dict:
+    """Retorna un diccionario de todos los hogares registrados."""
+    return rh.listar_hogares()
 
 
-def buscar_hogar_por_id(id_hogar: str):
-    """
-    Busca un hogar por su ID único.
+def buscar_hogar_por_id(id_hogar: str) -> Optional[dict]:
+    """Busca un hogar por su ID unico."""
+    return rh.obtener_hogar(id_hogar)
 
-    Args:
-        id_hogar (str): El ID del hogar a buscar.
 
-    Returns:
-        dict or None: El diccionario del hogar si se encuentra, de lo contrario None.
-    """
-    return _hogares.get(id_hogar)
+def eliminar_hogar(id_hogar: str) -> bool:
+    """Elimina un hogar por su ID."""
+    return rh.eliminar_hogar(id_hogar)
