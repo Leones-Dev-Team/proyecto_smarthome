@@ -1,101 +1,98 @@
-# modulos/servicios/servicios_dispositivos_control.py
+# servicios_dispositivos_control.py
+from typing import Optional, Tuple
+from datetime import datetime
+from modulos.repositorios import repositorio_dispositivos_control as rdc
+from modulos.repositorios import repositorio_hogares as rh
 import uuid
-from modulos.servicios.servicios_hogares import buscar_hogar_por_id
-
-# Simulación de una base de datos en memoria
-_dispositivos_control = []
 
 
-def crear_dispositivo_control(id_hogar: str, nombre: str, tipo: str, estado: bool):
+def crear_dispositivo_control(
+    id_hogar: str,
+    nombre: str,
+    tipo: str,
+    estado: str
+) -> Tuple[dict, int]:
     """
     Crea un nuevo dispositivo de control asociado a un hogar.
-
-    Args:
-        id_hogar (str): El ID del hogar al que pertenece el dispositivo de control.
-        nombre (str): El nombre del dispositivo.
-        tipo (str): El tipo de dispositivo (ej. "sensor", "termostato", "hub").
-        estado (bool): El estado inicial del dispositivo (True para encendido, False para apagado).
-
-    Returns:
-        tuple: Un diccionario con los datos del nuevo dispositivo y un código de estado (201).
-            En caso de error, retorna un diccionario con un mensaje de error y un
-            código de estado (400 o 404).
+    Estado debe ser 'encendido' o 'apagado'.
     """
-    # Validaciones de tipo de dato
-    if not isinstance(id_hogar, str) or not isinstance(nombre, str) or not isinstance(tipo, str) or not isinstance(estado, bool):
-        return {"error": "Tipos de datos incorrectos."}, 400
+    if not all(isinstance(v, str) and v.strip() for v in (id_hogar, nombre, tipo, estado)):
+        return {"error": "Datos invalido o vacio."}, 400
 
-    # Validar que el id_hogar exista usando el servicio correspondiente
-    hogar_existente = buscar_hogar_por_id(id_hogar)
-    if not hogar_existente:
-        return {"error": "El 'id_hogar' proporcionado no existe."}, 404
+    if estado not in ("encendido", "apagado"):
+        return {"error": "Estado invalido. Use 'encendido' o 'apagado'."}, 400
 
-    nuevo_dispositivo = {
-        "id_dispositivo_control": str(uuid.uuid4()),
-        "id_hogar": id_hogar,
-        "nombre": nombre,
-        "tipo": tipo,
-        "estado": estado
-    }
-    _dispositivos_control.append(nuevo_dispositivo)
-    return nuevo_dispositivo, 201
+    if not rh.existe_hogar(id_hogar):
+        return {"error": f"El hogar con ID '{id_hogar}' no existe."}, 404
 
-
-def listar_dispositivos_control():
-    """
-    Retorna una lista de todos los dispositivos de control.
-
-    Returns:
-        list: Una lista de diccionarios, donde cada diccionario representa un dispositivo.
-    """
-    return list(_dispositivos_control)  # Devuelve una copia para evitar modificaciones externas
-
-
-def buscar_dispositivo_control_por_id(id_dispositivo: str):
-    """
-    Busca un dispositivo de control por su ID único.
-
-    Args:
-        id_dispositivo (str): El ID del dispositivo de control a buscar.
-
-    Returns:
-        dict or None: El diccionario del dispositivo si se encuentra, de lo contrario None.
-    """
-    for dispositivo in _dispositivos_control:
-        if dispositivo.get("id_dispositivo_control") == id_dispositivo:
-            return dispositivo
-    return None
+    try:
+        ahora = datetime.now().isoformat()
+        nuevo_control = rdc.crear_control(
+            id_control=str(uuid.uuid4()),
+            id_usuario_conectado=None,
+            hora_de_conexion=ahora if estado == "encendido" else None,
+            dispositivos_activos=[] if estado == "encendido" else [],
+            dispositivos_apagados=[] if estado == "apagado" else [],
+            dispositivos_en_ahorro_de_energia=[],
+            registro_actividad=[{
+                "accion": f"crear_control_{estado}",
+                "fecha": ahora
+            }],
+            otros={
+                "id_hogar": id_hogar,
+                "nombre": nombre,
+                "tipo": tipo,
+                "estado": estado
+            }
+        )
+        return nuevo_control, 201
+    except ValueError as e:
+        return {"error": str(e)}, 400
 
 
-def obtener_estado_dispositivo(id_dispositivo: str):
-    """
-    Obtiene el estado (encendido/apagado) de un dispositivo de control por su ID.
+def listar_dispositivos_control() -> dict:
+    """Retorna todos los dispositivos de control."""
+    return rdc.listar_controles()
 
-    Args:
-        id_dispositivo (str): El ID del dispositivo de control.
 
-    Returns:
-        tuple: Estado del dispositivo (True/False) y código de estado (200/404).
-    """
-    dispositivo = buscar_dispositivo_control_por_id(id_dispositivo)
-    if dispositivo:
-        return dispositivo["estado"], 200
+def buscar_dispositivo_control_por_id(id_control: str) -> Optional[dict]:
+    """Busca un dispositivo de control por su ID."""
+    return rdc.obtener_control(id_control)
+
+
+def obtener_estado_dispositivo(id_control: str) -> Tuple[object, int]:
+    """Obtiene el estado de un dispositivo de control."""
+    control = rdc.obtener_control(id_control)
+    if control:
+        return control.get("otros", {}).get("estado"), 200
     return {"error": "Dispositivo no encontrado."}, 404
 
 
-def actualizar_estado_dispositivo(id_dispositivo: str, nuevo_estado: bool):
+def actualizar_estado_dispositivo(id_control: str, nuevo_estado: str, origen: Optional[str] = None) -> Tuple[dict, int]:
     """
-    Actualiza el estado de un dispositivo de control.
-
-    Args:
-        id_dispositivo (str): El ID del dispositivo de control.
-        nuevo_estado (bool): El nuevo estado (True/False).
-
-    Returns:
-        tuple: Diccionario actualizado y código de estado (200/404).
+    Actualiza el estado de un dispositivo de control, ajusta hora_de_conexion
+    y registra la acción en el historial.
     """
-    dispositivo = buscar_dispositivo_control_por_id(id_dispositivo)
-    if dispositivo:
-        dispositivo["estado"] = nuevo_estado
-        return dispositivo, 200
-    return {"error": "Dispositivo no encontrado."}, 404
+    if not isinstance(id_control, str) or not id_control.strip():
+        return {"error": "ID de control invalido."}, 400
+    if nuevo_estado not in ("encendido", "apagado"):
+        return {"error": "Estado invalido. Use 'encendido' o 'apagado'."}, 400
+
+    control = rdc.obtener_control(id_control)
+    if not control:
+        return {"error": "Dispositivo no encontrado."}, 404
+
+    control["otros"]["estado"] = nuevo_estado
+    control["hora_de_conexion"] = datetime.now(
+    ).isoformat() if nuevo_estado == "encendido" else None
+    if "registro_actividad" in control and isinstance(control["registro_actividad"], list):
+        control["registro_actividad"].append({
+            "accion": origen if origen else f"cambiar_estado_{nuevo_estado}",
+            "fecha": datetime.now().isoformat()
+        })
+    return control, 200
+
+
+def eliminar_dispositivo_control(id_control: str) -> bool:
+    """Elimina un dispositivo de control por su ID."""
+    return rdc.eliminar_control(id_control)
